@@ -5,7 +5,6 @@
 
 
 ## Infos suplémentaires
- - Implémentation plus complète des fichiers initiaux.
  - Un example **d'héritage** de classe provenant d'un design PyQt5 dans **Application/instance_ui.py.**
  - Un example **d'instance** d'un widget de classe (dialogue) dans **Application/main-app.py.**
  -  -**Application/main_app.py** est le point de départ du programme. Il doit **contenir les instances** nécéssaires à sont fonctionnement.
