@@ -1,8 +1,6 @@
-pyuic5 -x BookHeroProjectDesigner/mainwindow.ui -o Bibli_ui_designer/mainwindow.py
-pyuic5 -x BookHeroProjectDesigner/mainwindow.ui -o BookHeroProjectDesigner/last_ui/mainwindow.py
+pyuic5 -x BookHeroProjectDesigner/ecranacceuil.ui -o Bibli_ui_designer/ecranacceuil.py
+pyuic5 -x BookHeroProjectDesigner/ecranacceuil.ui -o BookHeroProjectDesigner/last_ui/ecranacceuil.py
 
-pyuic5 -x BookHeroProjectDesigner/dbbrowser.ui -o Bibli_ui_designer/dbbrowser.py
-pyuic5 -x BookHeroProjectDesigner/dbbrowser.ui -o BookHeroProjectDesigner/last_ui/dbbrowser.py
 
 echo Succes !!!
 

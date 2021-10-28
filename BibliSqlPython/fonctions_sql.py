@@ -1,8 +1,8 @@
-from mysql import connector as _mysqlConnector
+from mysql import connector as _mysqlConnector # Alias
 from getpass import getpass
 
 
-# Aliases
+# Mysql Connection class
 __MySqlConnType = _mysqlConnector.connection.MySQLConnection
 
 
@@ -64,14 +64,6 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
     CURSEUR = BD_CONNECTION.cursor()
     print("\n La session SQL est établie")
     return CURSEUR
-
-config ={
-'host' : var_host,
-'user' : var_user,
-'password' : var_pass,
-'database' : var_db
-};
-mydb = mysql.connector.connect();
 
 
 def config_warning( connection ):
