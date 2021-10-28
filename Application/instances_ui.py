@@ -31,3 +31,6 @@ class ECRAN_ACCEUIL(QDialog):
 
     def setup_logics(self, w_parent):
         self.connectionbtn.clicked.connect(lambda:self.connect_actionbtn(w_parent))
+    
+    def connect_actionbtn(self):
+        pass
