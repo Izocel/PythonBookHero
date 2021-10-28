@@ -2,6 +2,9 @@ from mysql import connector as _mysqlConnector # Alias
 from getpass import getpass
 
 
+def __init__(self):
+    pass
+
 # Mysql Connection class
 __MySqlConnType = _mysqlConnector.connection.MySQLConnection
 
@@ -211,7 +214,7 @@ def get_cond_question(champ, type):
 def dataForm(table :str, database :str, CURSEUR):
 
     name_n_type_list = CURSEUR_name_and_type(CURSEUR, table, database)['results']
-   
+
     champs:list = []
     valeur:list[list] = [[]]
     result:dict[champs,valeur] = {}
@@ -240,7 +243,7 @@ def dataForm(table :str, database :str, CURSEUR):
 def condForm(table :str, database :str, CURSEUR):
 
     name_n_type_list = CURSEUR_name_and_type(CURSEUR, table, database)['results']
-   
+
     champs:list = []
     valeur:list[list] = [[]]
     result:dict[champs,valeur] = {}
