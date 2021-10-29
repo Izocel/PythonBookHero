@@ -10,18 +10,20 @@ from instances_ui import *
 App = QApplication(sys.argv)
 s_widgets = QStackedWidget()
 
+
+##### Définir les classes d'instances dans instances_ui.py #####
+
 # instance 1 ......
-# Définir les classes dans instances_ui.py
-ecran_acceuil = ECRAN_ACCEUIL()
-ecran_acceuil.setup_logics(s_widgets)
+ecran_dev = ECRAN_DEV()
+ecran_dev.setup_logics(s_widgets)
 
 
 # instance 2 .......
 
 
 # Ajput des widgets 'layers'
-s_widgets.setGeometry(ecran_acceuil.geometry())
-s_widgets.addWidget(ecran_acceuil)
+s_widgets.setGeometry(ecran_dev.geometry())
+s_widgets.addWidget(ecran_dev)
 s_widgets.show()
 
 sys.exit(App.exec_())

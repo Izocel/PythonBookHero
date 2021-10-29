@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QDialog" name="MainWindow">
+ <class>EcranDeveloppeur</class>
+ <widget class="QDialog" name="EcranDeveloppeur">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -29,9 +29,9 @@ background: qlineargradient(spread:pad, x1:0.091, y1:0.101636, x2:0.991379, y2:0
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>618</x>
+      <x>270</x>
       <y>140</y>
-      <width>151</width>
+      <width>921</width>
       <height>71</height>
      </rect>
     </property>
@@ -39,13 +39,13 @@ background: qlineargradient(spread:pad, x1:0.091, y1:0.101636, x2:0.991379, y2:0
      <string notr="true">font: 36pt &quot;MS Shell Dlg 2&quot;; color:rgb(255, 255, 255)</string>
     </property>
     <property name="text">
-     <string>PyCrud</string>
+     <string>Python Book Hero (écran hors production)</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>508</x>
+      <x>520</x>
       <y>230</y>
       <width>391</width>
       <height>41</height>
@@ -55,14 +55,14 @@ background: qlineargradient(spread:pad, x1:0.091, y1:0.101636, x2:0.991379, y2:0
      <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;color:rgb(255, 255, 255)</string>
     </property>
     <property name="text">
-     <string>Entrer les informations de connection</string>
+     <string>Entrer le mot de passe de la BD</string>
     </property>
    </widget>
    <widget class="QPushButton" name="connectionbtn">
     <property name="geometry">
      <rect>
       <x>510</x>
-      <y>580</y>
+      <y>390</y>
       <width>341</width>
       <height>51</height>
      </rect>
@@ -77,81 +77,6 @@ font: 14pt &quot;MS Shell Dlg 2&quot;;</string>
     </property>
     <property name="text">
      <string>Connection</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="hostfield">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>320</y>
-      <width>341</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:rgba(0,0,0,0);
-font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>localhost</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="portfield">
-    <property name="geometry">
-     <rect>
-      <x>870</x>
-      <y>320</y>
-      <width>121</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:rgba(0,0,0,0);
-font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>3306</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>300</y>
-      <width>81</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>MS Shell Dlg 2</family>
-      <pointsize>10</pointsize>
-      <weight>50</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Hôte</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>870</x>
-      <y>300</y>
-      <width>81</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Port</string>
     </property>
    </widget>
    <widget class="QLabel" name="error">
@@ -170,44 +95,11 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QLineEdit" name="userfield">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>408</y>
-      <width>341</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:rgba(0,0,0,0);
-font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>root</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>388</y>
-      <width>81</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Usager</string>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="passwordfield">
     <property name="geometry">
      <rect>
       <x>520</x>
-      <y>500</y>
+      <y>310</y>
       <width>341</width>
       <height>51</height>
      </rect>
@@ -224,7 +116,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
     <property name="geometry">
      <rect>
       <x>520</x>
-      <y>480</y>
+      <y>290</y>
       <width>81</width>
       <height>20</height>
      </rect>
