@@ -11,27 +11,87 @@ from gestion_ui import *
 # CLASSES DE DIALOGUES #######################################################
 
 
-
- #### EXAMPLE ####
-# Extension de la classe provenant du designer (mainwindow.ui)
-# Proprietées connu sur LOGIN_W(mainwindow)
-    # hostfield (input)
-    # portfield (input)
-    # userfield (input)
-    # passwordfield (input)  pyCrudApp\ui_designs
-    # connectionbtn (button)
+#### ECRAN_USAGER ##############################################
+# Extension de la classe provenant du designer (ecranusager.ui)
+# Proprietées connu sur ECRAN_USAGER
+    #
+    #
+    #
 #
-class ECRAN_DEV(QDialog):
+class ECRAN_USAGER(QDialog):
+
+    parent = {}
 
     def __init__(self):
-        super(ECRAN_DEV, self).__init__()
+        super(ECRAN_USAGER, self).__init__()
         ui_path =  os.path.dirname(os.path.abspath(__file__))
-        ui_path += '\\Bibli_ui\\ecrandeveloppeur.ui'
+        ui_path += '\\Bibli_ui\\ecranusager.ui'
         loadUi(ui_path, self)
 
     def setup_logics(self, w_parent):
-        self.connectionbtn.clicked.connect(lambda:self.connect_actionbtn())
+        global parent
+        parent = w_parent
+
+        self.deconnectionpushButton.clicked.connect(lambda:self.deconnection_usagers_btnaction())
+
     
+    def deconnection_usagers_btnaction(self):
+        global parent
+        ecran_acceuil = parent.findChild(QDialog, 'EcranAcceuil')
+        ecran_acceuil.app_disconnect()
+        ecran_acceuil.setup_logics(parent)
+        parent.setCurrentIndex(parent.currentIndex()-1)
+
+
+#### ECRAN_ACCEUIL ##############################################
+# Extension de la classe provenant du designer (ecranacceuil.ui)
+# Proprietées connu sur ECRAN_ACCEUIL
+    # connectionpushButton (btn)
+    # motdepasse_lineEdit (input)
+    # courriel_lineEdit (input)
+#
+class ECRAN_ACCEUIL(QDialog):
+
+    parent = {}
+    logged_in = False
+
+    def __init__(self):
+        super(ECRAN_ACCEUIL, self).__init__()
+        ui_path =  os.path.dirname(os.path.abspath(__file__))
+        ui_path += '\\Bibli_ui\\ecranacceuil.ui'
+        loadUi(ui_path, self)
+
+        global logged_in
+        logged_in = False
+
+    def setup_logics(self, w_parent):
+        global logged_in
+        global parent
+        parent = w_parent
+
+        self.label_mauvaise_infos.hide()
+        self.connectionpushButton.clicked.connect(lambda:self.connection_usagers_btnaction())
+        
+    
+    def app_disconnect(self):
+            global logged_in
+            if(logged_in):
+                logged_in = mysql_app_disconnection()
+
+            return logged_in
+        
+    def app_connect(self):
+        global logged_in
+
+        bd_config = ECRAN_ACCEUIL.get_bd_credentials(self)
+
+        if(mysql_app_connection(bd_config, True)):
+
+            logged_in = True
+            mysql_app_create_tables()
+            mysql_app_insert_user()
+            
+        return logged_in
 
     def get_bd_credentials(self):
 
@@ -39,18 +99,36 @@ class ECRAN_DEV(QDialog):
         conn_fields['host'] = 'localhost'
         conn_fields['port'] = '3306'
         conn_fields['user'] = 'root' #TODO: Faire un user juste pour cette BD
-        conn_fields['password'] = self.passwordfield.text() #TODO: Temporaire pour le développement
+        conn_fields['password'] = getpass("Entrer le mot de passe mysql: \n ==> ")
 
         return conn_fields
 
-    def connect_actionbtn(self):
 
-        bd_config = ECRAN_DEV.get_bd_credentials(self)
-        #Try 
-        mysql_app_connection(bd_config, True)
-        self.connectionbtn.clicked.disconnect()
+    def get_usager_credentials(self):
 
-        mysql_app_create_tables()
-        mysql_app_insert_user()
+        conn_fields = {}
+        conn_fields['courriel'] = self.courriel_lineEdit.text()
+        conn_fields['hashmotpasse'] = hash_sha2_data([self.motdepasse_lineEdit.text()])[0]
 
-        
+        return conn_fields
+
+    def connection_usagers_btnaction(self):
+        global logged_in
+
+        if(not logged_in):
+            logged_in = self.app_connect()
+
+        if(logged_in):
+            user_cred = self.get_usager_credentials()
+            acces_usager_promu = verif_connection_usager(**user_cred)
+
+            if(acces_usager_promu):
+                self.label_mauvaise_infos.hide()
+                self.connectionpushButton.disconnect()
+
+                ######### CHANGER DE PAGE  ############
+                parent.setCurrentIndex(parent.currentIndex()+1)
+
+            else: # Ajouter un message à l'écran de mauvaise infos....
+                self.app_disconnect()
+                self.label_mauvaise_infos.show()

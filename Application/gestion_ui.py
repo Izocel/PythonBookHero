@@ -1,9 +1,27 @@
-# Permet le hashache de donnée pour la comparaison seulement
-import hashlib
-
 # Workspace related
 from BibliSqlPython.fonctions_sql import *
 
+
+def verif_connection_usager(**user_credentials):
+
+    if 'courriel' in user_credentials:
+        courriel = user_credentials['courriel']
+
+    if 'hashmotpasse' in user_credentials:
+        mdp_hash = user_credentials['hashmotpasse']
+
+    if(courriel and mdp_hash):
+        global CURSEUR
+        global BASETABLE
+
+        BASETABLE = 'usagers'
+        quer = select_data_querry(BASETABLE, 'id', "where courriel = %s and mot_de_passe = %s",'','','limit 1')
+
+        CURSEUR.execute(quer, (courriel,mdp_hash) )
+        usager = CURSEUR.fetchone()
+        return usager
+
+    return False
 
 def mysql_app_insert_user():
     global BASETABLE
@@ -17,12 +35,16 @@ def mysql_app_insert_user():
     if(len(usagers) == 0):
 
         data_usager = [
-            ['Bob', 13, 'triangle1232009@Hotmail.com', 'qwerty123'],
-            ['John', 18, 'whateverid@Hotmail.com', 'qwerty456'],
-            ['Lulu', 21, 'imashutthisoff@ny.com', 'qwerty789'],
-            ['Allan', 32, 'momoiscool@Hotmail.com', 'qwerty159'],
+            ['Dumoulin', 'Bob', 13, 'triangle1232009@Hotmail.com', 'qwerty123'],
+            ['Dumoulin', 'John', 18, 'whateverid@Hotmail.com', 'qwerty456'],
+            ['Dumoulin', 'Lulu', 21, 'imashutthisoff@ny.com', 'qwerty789'],
+            ['Dumoulin', 'Allan', 32, 'momoiscool@Hotmail.com', 'qwerty159'],
         ]
-        champs = ['prenom', 'age', 'courriel', 'mot_de_passe'] 
+
+        for passwordAt in data_usager:
+            passwordAt[4] = hash_sha2_data([passwordAt[4]])[0]
+
+        champs = ['nom', 'prenom', 'age', 'courriel', 'mot_de_passe'] 
 
         builder = insertion_querry(BASETABLE, data_usager, champs)
         CURSEUR.executemany(builder['sql'], builder['val'])
@@ -42,19 +64,19 @@ def mysql_app_create_tables():
     CURSEUR.reset()
     
     # TABLE USAGERS
-    sql = '''CREATE TABLE IF NOT EXISTS Usagers(
+    sql = '''CREATE TABLE IF NOT EXISTS usagers(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     prenom VARCHAR(50) NOT NULL,
     nom VARCHAR(50) NOT NULL,
     age TINYINT(3),
     courriel VARCHAR(255) NOT NULL,
-    mot_de_passe VARCHAR(384) NOT NULL
+    mot_de_passe VARCHAR(512) NOT NULL
     )'''
     CURSEUR.execute(sql)
     CURSEUR.reset()
 
     # TABLE LIVRES
-    sql = '''CREATE TABLE IF NOT EXISTS Livres(
+    sql = '''CREATE TABLE IF NOT EXISTS livres(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     titre VARCHAR(150) NOT NULL,
     isbn VARCHAR(255) NOT NULL,
@@ -64,41 +86,40 @@ def mysql_app_create_tables():
     CURSEUR.reset()
 
     # TABLE CHAPITRES_LIVRES
-    sql = '''CREATE TABLE IF NOT EXISTS Chapitres_livres(
+    sql = '''CREATE TABLE IF NOT EXISTS chapitres_livres(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     id_livre INT NOT NULL,
     numero tinyint(4) NOT NULL,
     contenue TEXT NOT NULL,
-    FOREIGN KEY (id_livre) REFERENCES Livres(id)
+    FOREIGN KEY (id_livre) REFERENCES livres(id)
     )'''
     CURSEUR.execute(sql)
     CURSEUR.reset()
 
     # TABLE PERMISSIONS_LIVRES_USAGERS
-    sql = '''CREATE TABLE IF NOT EXISTS Permission_livres_usagers(
+    sql = '''CREATE TABLE IF NOT EXISTS permission_livres_usagers(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     id_usager INT NOT NULL,
     id_livre INT,
-    FOREIGN KEY (id_usager) REFERENCES Usagers(id),
-    FOREIGN KEY (id_livre) REFERENCES Livres(id)
+    FOREIGN KEY (id_usager) REFERENCES usagers(id),
+    FOREIGN KEY (id_livre) REFERENCES livres(id)
     )'''
     CURSEUR.execute(sql)
     CURSEUR.reset()
 
     # TABLE SAUVEGARDES_PARTIES
-    sql = '''CREATE TABLE IF NOT EXISTS Sauvegardes_paties(
+    sql = '''CREATE TABLE IF NOT EXISTS sauvegardes_parties(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     id_usager INT NOT NULL,
     id_livre INT NOT NULL,
     id_chapitre INT NOT NULL,
     page TINYINT(8),
-    FOREIGN KEY (id_usager) REFERENCES Usagers(id),
-    FOREIGN KEY (id_livre) REFERENCES Livres(id),
-    FOREIGN KEY (id_chapitre) REFERENCES Chapitres_livres(id)
+    FOREIGN KEY (id_usager) REFERENCES usagers(id),
+    FOREIGN KEY (id_livre) REFERENCES livres(id),
+    FOREIGN KEY (id_chapitre) REFERENCES chapitres_livres(id)
     )'''
     CURSEUR.execute(sql)
     CURSEUR.reset()
-
 
 
 def mysql_app_connection(config_input:dict = {}, autocommit:bool = False):
@@ -111,8 +132,7 @@ def mysql_app_disconnection():
     global CURSEUR
     CURSEUR.reset()
     CURSEUR = {}
-    disconnect_from_mysql()
-    return True
+    return disconnect_from_mysql()
 
 def list_data(table):
     querry = select_data_querry(table)

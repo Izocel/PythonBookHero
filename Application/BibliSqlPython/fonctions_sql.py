@@ -1,6 +1,6 @@
 from mysql import connector as _mysqlConnector # Alias
 from getpass import getpass
-
+import hashlib
 
 def __init__(self):
     pass
@@ -58,13 +58,14 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
                 'host' : config_input['host'],
                 'user' : config_input['user'],
                 'password' : config_input['password'],
-                'database' : 'python_book_hero',
+                'database' : '',
                 'autocommit': autocommit
             }
 
             #TODO:.dontDieOnBadInfosPlz()
             BD_CONNECTION = _mysqlConnector.connect(**BD_CONFIG)
             config_warning(BD_CONNECTION)
+    BD_CONFIG['database'] =  'python_book_hero'
     CURSEUR = BD_CONNECTION.cursor()
     print("\n La session SQL est établie")
     return CURSEUR
@@ -262,7 +263,6 @@ def dataTypeStringNotation(value: any):
     return ''
 
 def fetch_CURSEUR(CURSEUR, print_me = False):
-    
     if(print_me == True):
         print("\n")
 
@@ -368,3 +368,37 @@ def delete_commit_check(querry):
             print("\n Donnée supprimé !!!")
 
 
+
+def hash_sha2_data(datalist:list[str] = [], hash_length:int = 256):
+
+    hashes = []
+
+    if hash_length == 224:
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha224(encoded)
+            hashes.append(result.hexdigest())
+
+    elif hash_length == 384:
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha384(encoded)
+            hashes.append(result.hexdigest())
+
+    elif hash_length == 512:
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha512(encoded)
+            hashes.append(result.hexdigest())
+
+    else: # sha256 if hash_length not supported
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha256(encoded)
+            hashes.append(result.hexdigest())
+
+    return hashes

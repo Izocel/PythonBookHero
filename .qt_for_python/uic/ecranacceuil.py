@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'e:\OneDrive - Cégep de Victoriaville\TransfertSchool\2021-2022\BD-2\PythonBookHero\BookHeroProjectDesigner\ecranacceuil.ui'
+# Form implementation generated from reading ui file 'e:\OneDrive - Cégep de Victoriaville\TransfertSchool\2021-2022\BD-2\PythonBookHero\Application\Bibli_ui\ecranacceuil.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.5
 #
@@ -16,39 +16,79 @@ class Ui_EcranAcceuil(object):
         EcranAcceuil.setObjectName("EcranAcceuil")
         EcranAcceuil.resize(1426, 903)
         self.bgwidget = QtWidgets.QWidget(EcranAcceuil)
-        self.bgwidget.setGeometry(QtCore.QRect(0, 20, 1451, 911))
+        self.bgwidget.setGeometry(QtCore.QRect(0, 0, 1451, 911))
         self.bgwidget.setStyleSheet("QWidget#bgwidget{\n"
-"background: qlineargradient(spread:pad, x1:0.091, y1:0.101636, x2:0.991379, y2:0.977, stop:0 rgba(100, 25, 2, 255), stop:1 rgba(255, 255, 255, 255));}")
+"background: qlineargradient(spread:pad, x1:0.091, y1:0.101636, x2:0.991379, y2:0.977, stop:0 rgba(100, 25, 2, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"\n"
+"}\n"
+"")
         self.bgwidget.setObjectName("bgwidget")
         self.label = QtWidgets.QLabel(self.bgwidget)
-        self.label.setGeometry(QtCore.QRect(270, 140, 921, 71))
+        self.label.setGeometry(QtCore.QRect(500, 120, 401, 71))
         self.label.setStyleSheet("font: 36pt \"MS Shell Dlg 2\"; color:rgb(255, 255, 255)")
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self.bgwidget)
-        self.label_2.setGeometry(QtCore.QRect(520, 230, 391, 41))
+        self.label_2.setGeometry(QtCore.QRect(520, 220, 391, 41))
         self.label_2.setStyleSheet("font: 16pt \"MS Shell Dlg 2\";color:rgb(255, 255, 255)")
         self.label_2.setObjectName("label_2")
-        self.connectionbtn = QtWidgets.QPushButton(self.bgwidget)
-        self.connectionbtn.setGeometry(QtCore.QRect(510, 390, 341, 51))
-        self.connectionbtn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.connectionbtn.setStyleSheet("border-radius:20px;\n"
+        self.connectionpushButton = QtWidgets.QPushButton(self.bgwidget)
+        self.connectionpushButton.setGeometry(QtCore.QRect(520, 500, 341, 51))
+        self.connectionpushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.connectionpushButton.setStyleSheet("border-radius:20px;\n"
 "background-color: rgb(170, 255, 255);\n"
 "font: 14pt \"MS Shell Dlg 2\";")
-        self.connectionbtn.setObjectName("connectionbtn")
-        self.error = QtWidgets.QLabel(self.bgwidget)
-        self.error.setGeometry(QtCore.QRect(440, 456, 341, 20))
-        self.error.setStyleSheet("font: 12pt \"MS Shell Dlg 2\"; color:red;")
-        self.error.setText("")
-        self.error.setObjectName("error")
-        self.passwordfield = QtWidgets.QLineEdit(self.bgwidget)
-        self.passwordfield.setGeometry(QtCore.QRect(520, 310, 341, 51))
-        self.passwordfield.setStyleSheet("background-color:rgba(0,0,0,0);\n"
+        self.connectionpushButton.setObjectName("connectionpushButton")
+        self.motdepasse_lineEdit = QtWidgets.QLineEdit(self.bgwidget)
+        self.motdepasse_lineEdit.setGeometry(QtCore.QRect(520, 431, 341, 51))
+        self.motdepasse_lineEdit.setStyleSheet("background-color:rgba(0,0,0,0);\n"
 "font: 12pt \"MS Shell Dlg 2\";")
-        self.passwordfield.setObjectName("passwordfield")
-        self.label_6 = QtWidgets.QLabel(self.bgwidget)
-        self.label_6.setGeometry(QtCore.QRect(520, 290, 81, 20))
-        self.label_6.setStyleSheet("font: 10pt \"MS Shell Dlg 2\";")
-        self.label_6.setObjectName("label_6")
+        self.motdepasse_lineEdit.setObjectName("motdepasse_lineEdit")
+        self.label_courriel = QtWidgets.QLabel(self.bgwidget)
+        self.label_courriel.setGeometry(QtCore.QRect(523, 305, 131, 20))
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        font.setPointSize(16)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.label_courriel.setFont(font)
+        self.label_courriel.setStyleSheet("font: 16pt \"MS Shell Dlg 2\";")
+        self.label_courriel.setObjectName("label_courriel")
+        self.courriel_lineEdit = QtWidgets.QLineEdit(self.bgwidget)
+        self.courriel_lineEdit.setGeometry(QtCore.QRect(520, 330, 341, 51))
+        self.courriel_lineEdit.setStyleSheet("background-color:rgba(0,0,0,0);\n"
+"font: 12pt \"MS Shell Dlg 2\";")
+        self.courriel_lineEdit.setObjectName("courriel_lineEdit")
+        self.label_mdp = QtWidgets.QLabel(self.bgwidget)
+        self.label_mdp.setGeometry(QtCore.QRect(521, 407, 131, 20))
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        font.setPointSize(16)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.label_mdp.setFont(font)
+        self.label_mdp.setStyleSheet("font: 16pt \"MS Shell Dlg 2\";")
+        self.label_mdp.setObjectName("label_mdp")
+        self.label_mauvaise_infos = QtWidgets.QLabel(self.bgwidget)
+        self.label_mauvaise_infos.setEnabled(True)
+        self.label_mauvaise_infos.setGeometry(QtCore.QRect(450, 570, 491, 51))
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        font.setPointSize(16)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.label_mauvaise_infos.setFont(font)
+        self.label_mauvaise_infos.setAutoFillBackground(False)
+        self.label_mauvaise_infos.setStyleSheet("font: 16pt \"MS Shell Dlg 2\";\n"
+"color: red;\n"
+"background: rgba(10,10,10,55);")
+        self.label_mauvaise_infos.setFrameShape(QtWidgets.QFrame.Box)
+        self.label_mauvaise_infos.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.label_mauvaise_infos.setLineWidth(-1)
+        self.label_mauvaise_infos.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_mauvaise_infos.setObjectName("label_mauvaise_infos")
 
         self.retranslateUi(EcranAcceuil)
         QtCore.QMetaObject.connectSlotsByName(EcranAcceuil)
@@ -56,8 +96,11 @@ class Ui_EcranAcceuil(object):
     def retranslateUi(self, EcranAcceuil):
         _translate = QtCore.QCoreApplication.translate
         EcranAcceuil.setWindowTitle(_translate("EcranAcceuil", "Dialog"))
-        self.label.setText(_translate("EcranAcceuil", "Python Book Hero (écran hors production)"))
-        self.label_2.setText(_translate("EcranAcceuil", "Entrer le mot de passe de la BD"))
-        self.connectionbtn.setText(_translate("EcranAcceuil", "Connection"))
-        self.passwordfield.setText(_translate("EcranAcceuil", "********"))
-        self.label_6.setText(_translate("EcranAcceuil", "Mot de passe"))
+        self.label.setText(_translate("EcranAcceuil", "Python Book Hero"))
+        self.label_2.setText(_translate("EcranAcceuil", "Entrez vos informations de connection"))
+        self.connectionpushButton.setText(_translate("EcranAcceuil", "Connection"))
+        self.motdepasse_lineEdit.setText(_translate("EcranAcceuil", "qwerty123"))
+        self.label_courriel.setText(_translate("EcranAcceuil", "Courriel"))
+        self.courriel_lineEdit.setText(_translate("EcranAcceuil", "triangle1232009@hotmail.com"))
+        self.label_mdp.setText(_translate("EcranAcceuil", "Mot de passe"))
+        self.label_mauvaise_infos.setText(_translate("EcranAcceuil", "* Oups, cette combinaison n\'à pu être retrouvée."))
