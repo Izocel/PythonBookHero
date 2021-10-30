@@ -13,9 +13,10 @@ __MySqlConnType = _mysqlConnector.connection.MySQLConnection
 BD_CONNECTION = {}
 BD_CONFIG = {}
 CURSEUR = {}
+BASETABLE = ''
 
 def get_config(key:str = ''):
-
+    global BD_CONFIG
     if(key == ''):
         return BD_CONFIG
     else:
@@ -52,12 +53,12 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
 
     for x in range(max_retry):
         while( type(BD_CONNECTION) is not __MySqlConnType ):
-
+            
             BD_CONFIG = {
                 'host' : config_input['host'],
                 'user' : config_input['user'],
                 'password' : config_input['password'],
-                'database' : '',
+                'database' : 'python_book_hero',
                 'autocommit': autocommit
             }
 
@@ -90,8 +91,21 @@ def show_tables_querry(database):
     querry = "SHOW TABLES FROM " + database
     return querry
 
-def select_data_querry(table):
-    querry = "SELECT * FROM ;" + table
+def select_data_querry(table:str, fields:str = '*', where:str = '', order:str = '', group:str = '',  limit:str = ''):
+    querry = "SELECT "+ fields + " FROM " + table
+
+    if(where != ''):
+        querry += " " + where
+
+    if(order != ''):
+        querry += " " + order
+
+    if(group != ''):
+        querry += " " + group
+
+    if(limit != ''):
+        querry += " " + limit
+
     return querry
 
 def select_colum_name_type_querry(table, database):
@@ -117,7 +131,7 @@ def CURSEUR_name_and_type(CURSEUR, table, database):
 
     return {'querry': tpye_and_colum_querry, 'results': table_resultat, 'types': table_type, 'names': table_col}
 
-def insertion_querry(table, inserts = [[]], champs = []):
+def insertion_querry(table:str, inserts = [[]], champs = []):
 
     querry = "INSERT INTO " + table
 
@@ -205,70 +219,6 @@ def update_querry(table :str, updates :list[list], champs :list, conds_list :lis
         'val' : valeursSql
     }
 
-def get_input_question(champ, type):
-    return "\n(Laisser vide pour default/ancienne_valeur)\nEntrée la valeur pour "+ champ +".\n type: " + type +" ===> "
-
-def get_cond_question(champ, type):
-    return "\n(Laisser vide pour ignorer)\nEntrée la valeur comparative pour "+ champ +".\n type: " + type +" ===> "
-
-def dataForm(table :str, database :str, CURSEUR):
-
-    name_n_type_list = CURSEUR_name_and_type(CURSEUR, table, database)['results']
-
-    champs:list = []
-    valeur:list[list] = [[]]
-    result:dict[champs,valeur] = {}
-
-    u_input = ""
-
-    print("\nEntrée les valeurs d'insert/update. Laisser vide pour default/ancienne_valeur")
-    for string_list in name_n_type_list:
-
-        champ = string_list[0]
-        sql_type = string_list[1]
-
-        question = get_input_question(champ, sql_type)
-        u_input = input(question)
-
-        if(u_input != ""):
-            formated_input = convert_string_to_sql_type(u_input, sql_type)
-
-            if(formated_input):
-                champs.append(champ)
-                valeur[0].append(formated_input)
-
-    result = { 'champs' : champs, 'valeurs': valeur}
-    return result
-
-def condForm(table :str, database :str, CURSEUR):
-
-    name_n_type_list = CURSEUR_name_and_type(CURSEUR, table, database)['results']
-
-    champs:list = []
-    valeur:list[list] = [[]]
-    result:dict[champs,valeur] = {}
-
-    u_input = ""
-
-    print("\nEntrée les valeurs conditionelles. Laisser vide pour ne pas utiliser ce champs en condition.")
-    for string_list in name_n_type_list:
-
-        champ = string_list[0]
-        sql_type = string_list[1]
-
-        question = get_cond_question(champ, sql_type)
-        u_input = input(question)
-
-        if(u_input != ""):
-            formated_input = convert_string_to_sql_type(u_input, sql_type)
-
-            if(formated_input):
-                champs.append(champ)
-                valeur[0].append(formated_input)
-
-    result = { 'cond_champs' : champs, 'cond_valeurs': valeur}
-    return result
-
 def convert_string_to_sql_type(input_str: str, sql_type_str: str):
 
     if( sql_type_str.startswith("char") ):
@@ -312,7 +262,7 @@ def dataTypeStringNotation(value: any):
     return ''
 
 def fetch_CURSEUR(CURSEUR, print_me = False):
-
+    
     if(print_me == True):
         print("\n")
 
@@ -408,12 +358,8 @@ def delete_commit_check(querry):
         # Try 
         CURSEUR.execute(querry)
         # Catch
-        
-        print("\n Donnée supprimé !!!")
-    else:
 
-        u_input = input("\n Êtes-vous certains de vouloir supprimer cette donnée? (y/n)\n ==> ")
-        if(u_input == 'y'):
+    else:
 
             # Try 
             CURSEUR.execute(querry)

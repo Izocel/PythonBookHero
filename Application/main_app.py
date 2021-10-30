@@ -6,6 +6,11 @@ from instances_ui import *
 
 # Section LAUNCH ##############################################
 
+
+# Section de BD......
+
+
+
 # instance de la couche applicative
 App = QApplication(sys.argv)
 s_widgets = QStackedWidget()

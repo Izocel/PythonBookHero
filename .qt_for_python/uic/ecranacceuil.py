@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'e:\OneDrive - Cégep de Victoriaville\TransfertSchool\2021-2022\BD-2\PythonBookHero\Application\Bibli_ui\ecranacceuil.ui'
+# Form implementation generated from reading ui file 'e:\OneDrive - Cégep de Victoriaville\TransfertSchool\2021-2022\BD-2\PythonBookHero\BookHeroProjectDesigner\ecranacceuil.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.5
 #
@@ -11,12 +11,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_EcranDeveloppeur(object):
-    def setupUi(self, EcranDeveloppeur):
-        EcranDeveloppeur.setObjectName("EcranDeveloppeur")
-        EcranDeveloppeur.resize(1426, 903)
-        self.bgwidget = QtWidgets.QWidget(EcranDeveloppeur)
-        self.bgwidget.setGeometry(QtCore.QRect(0, 0, 1451, 911))
+class Ui_EcranAcceuil(object):
+    def setupUi(self, EcranAcceuil):
+        EcranAcceuil.setObjectName("EcranAcceuil")
+        EcranAcceuil.resize(1426, 903)
+        self.bgwidget = QtWidgets.QWidget(EcranAcceuil)
+        self.bgwidget.setGeometry(QtCore.QRect(0, 20, 1451, 911))
         self.bgwidget.setStyleSheet("QWidget#bgwidget{\n"
 "background: qlineargradient(spread:pad, x1:0.091, y1:0.101636, x2:0.991379, y2:0.977, stop:0 rgba(100, 25, 2, 255), stop:1 rgba(255, 255, 255, 255));}")
         self.bgwidget.setObjectName("bgwidget")
@@ -50,14 +50,14 @@ class Ui_EcranDeveloppeur(object):
         self.label_6.setStyleSheet("font: 10pt \"MS Shell Dlg 2\";")
         self.label_6.setObjectName("label_6")
 
-        self.retranslateUi(EcranDeveloppeur)
-        QtCore.QMetaObject.connectSlotsByName(EcranDeveloppeur)
+        self.retranslateUi(EcranAcceuil)
+        QtCore.QMetaObject.connectSlotsByName(EcranAcceuil)
 
-    def retranslateUi(self, EcranDeveloppeur):
+    def retranslateUi(self, EcranAcceuil):
         _translate = QtCore.QCoreApplication.translate
-        EcranDeveloppeur.setWindowTitle(_translate("EcranDeveloppeur", "Dialog"))
-        self.label.setText(_translate("EcranDeveloppeur", "Python Book Hero (écran hors production)"))
-        self.label_2.setText(_translate("EcranDeveloppeur", "Entrer le mot de passe de la BD"))
-        self.connectionbtn.setText(_translate("EcranDeveloppeur", "Connection"))
-        self.passwordfield.setText(_translate("EcranDeveloppeur", "********"))
-        self.label_6.setText(_translate("EcranDeveloppeur", "Mot de passe"))
+        EcranAcceuil.setWindowTitle(_translate("EcranAcceuil", "Dialog"))
+        self.label.setText(_translate("EcranAcceuil", "Python Book Hero (écran hors production)"))
+        self.label_2.setText(_translate("EcranAcceuil", "Entrer le mot de passe de la BD"))
+        self.connectionbtn.setText(_translate("EcranAcceuil", "Connection"))
+        self.passwordfield.setText(_translate("EcranAcceuil", "********"))
+        self.label_6.setText(_translate("EcranAcceuil", "Mot de passe"))

@@ -51,3 +51,6 @@ class ECRAN_DEV(QDialog):
         self.connectionbtn.clicked.disconnect()
 
         mysql_app_create_tables()
+        mysql_app_insert_user()
+
+        

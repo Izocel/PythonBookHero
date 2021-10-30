@@ -1,19 +1,43 @@
+# Permet le hashache de donnée pour la comparaison seulement
+import hashlib
+
 # Workspace related
-from logging import currentframe
 from BibliSqlPython.fonctions_sql import *
 
-BASETABLE = ''
-CURSEUR = {}
+
+def mysql_app_insert_user():
+    global BASETABLE
+    global CURSEUR
+    BASETABLE = 'usagers'
+
+    querry_usagers = select_data_querry(BASETABLE)
+    CURSEUR.execute(querry_usagers)
+    usagers = fetch_CURSEUR(CURSEUR)
+
+    if(len(usagers) == 0):
+
+        data_usager = [
+            ['Bob', 13, 'triangle1232009@Hotmail.com', 'qwerty123'],
+            ['John', 18, 'whateverid@Hotmail.com', 'qwerty456'],
+            ['Lulu', 21, 'imashutthisoff@ny.com', 'qwerty789'],
+            ['Allan', 32, 'momoiscool@Hotmail.com', 'qwerty159'],
+        ]
+        champs = ['prenom', 'age', 'courriel', 'mot_de_passe'] 
+
+        builder = insertion_querry(BASETABLE, data_usager, champs)
+        CURSEUR.executemany(builder['sql'], builder['val'])
+        CURSEUR.reset()
+
 
 def mysql_app_create_tables():
-    global CURSEUR
+    BD = get_config('database')
 
     # BASE DE DONNÉE
-    sql = "CREATE DATABASE IF NOT EXISTS python_book_hero"
+    sql = "CREATE DATABASE IF NOT EXISTS " + BD
     CURSEUR.execute(sql)
     CURSEUR.reset()
 
-    sql = "USE python_book_hero"
+    sql = "USE " + BD
     CURSEUR.execute(sql)
     CURSEUR.reset()
     
@@ -21,9 +45,10 @@ def mysql_app_create_tables():
     sql = '''CREATE TABLE IF NOT EXISTS Usagers(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     prenom VARCHAR(50) NOT NULL,
+    nom VARCHAR(50) NOT NULL,
     age TINYINT(3),
     courriel VARCHAR(255) NOT NULL,
-    mot_de_passe VARCHAR(312) NOT NULL
+    mot_de_passe VARCHAR(384) NOT NULL
     )'''
     CURSEUR.execute(sql)
     CURSEUR.reset()
@@ -94,4 +119,3 @@ def list_data(table):
     CURSEUR.execute(querry)
     list = fetch_CURSEUR(CURSEUR, True)
     return list
-

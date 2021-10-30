@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>EcranDeveloppeur</class>
- <widget class="QDialog" name="EcranDeveloppeur">
+ <class>EcranAcceuil</class>
+ <widget class="QDialog" name="EcranAcceuil">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>0</y>
+     <y>20</y>
      <width>1451</width>
      <height>911</height>
     </rect>
