@@ -32,14 +32,13 @@ class ECRAN_DEV(QDialog):
 
     def setup_logics(self, w_parent):
         bd_config = ECRAN_DEV.get_bd_credentials(self)
-                #Try 
+        #Try 
         mysql_app_connection(bd_config, True)
      
 
         mysql_app_create_tables()
         inserer_livres()
-        inserer_selection_chapitre()
-
+        inserer_chapitres_livres()
     
 
     def get_bd_credentials(self):
@@ -48,12 +47,11 @@ class ECRAN_DEV(QDialog):
         conn_fields['host'] = 'localhost'
         conn_fields['port'] = '3306'
         conn_fields['user'] = 'root' #TODO: Faire un user juste pour cette BD
-        conn_fields['password'] = 'mysql' #TODO: Temporaire pour le développement
+        conn_fields['password'] = getpass("Entrer le mot de passe mysql: \n ==> ") #TODO: Temporaire pour le développement
 
         return conn_fields
 
     def connect_actionbtn(self):
-
         pass
 
 class ECRAN_CHAPITRE(QDialog):
@@ -70,14 +68,20 @@ class ECRAN_CHAPITRE(QDialog):
         pass
 
     def field_selection_chapitre(self):
+        index = 0
+
+        self.selection_chapitre_comboBox.addItem("")
+        self.selection_chapitre_comboBox.setItemText(index, "Sélectionnez un chapitre")
+        index +=1
+
+        self.selection_chapitre_comboBox.addItem("")
+        self.selection_chapitre_comboBox.setItemText(index, "Nous somme désolés, aucune données disponible")
+        index +=1
 
         chapitres = lister_chapitre()
-        index = 0
-        for champs in chapitres:
-            self.selection_chapitre_comboBox.addItem("")
-            self.selection_chapitre_comboBox.setItemText(index, "chapitre " + str(champs[2]))
-            index +=1
-            
-
-
-   
+        if(len(chapitres) > 0):
+            for champs in chapitres:
+                self.selection_chapitre_comboBox.addItem("")
+                self.selection_chapitre_comboBox.setItemText(index, "chapitre " + str(champs[2]))
+                index +=1
+                
