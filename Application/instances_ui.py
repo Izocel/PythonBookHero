@@ -39,7 +39,6 @@ class ECRAN_DEV(QDialog):
         mysql_app_create_tables()
         inserer_livres()
         inserer_selection_chapitre()
-
     
 
     def get_bd_credentials(self):
@@ -53,7 +52,6 @@ class ECRAN_DEV(QDialog):
         return conn_fields
 
     def connect_actionbtn(self):
-
         pass
 
 class ECRAN_CHAPITRE(QDialog):
@@ -70,14 +68,19 @@ class ECRAN_CHAPITRE(QDialog):
         pass
 
     def field_selection_chapitre(self):
+        index = 0
+
+        self.selection_chapitre_comboBox.addItem("")
+        self.selection_chapitre_comboBox.setItemText(index, "Sélectionnez un chapitre")
+        index +=1
+
+        self.selection_chapitre_comboBox.addItem("")
+        self.selection_chapitre_comboBox.setItemText(index, "Nous somme désolés, aucune données disponible")
+        
 
         chapitres = lister_chapitre()
-        index = 0
-        for champs in chapitres:
-            self.selection_chapitre_comboBox.addItem("")
-            self.selection_chapitre_comboBox.setItemText(index, "chapitre " + str(champs[2]))
-            index +=1
-            
-
-
-   
+        if(len(chapitres) > 0):
+            for champs in chapitres:
+                self.selection_chapitre_comboBox.addItem("")
+                self.selection_chapitre_comboBox.setItemText(index, "chapitre " + str(champs[2]))
+                index +=1

@@ -21,6 +21,7 @@ def mysql_app_create_tables():
     sql = '''CREATE TABLE IF NOT EXISTS usagers(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     prenom VARCHAR(50) NOT NULL,
+    nom VARCHAR(50) NOT NULL,
     age TINYINT(3),
     courriel VARCHAR(255) NOT NULL,
     mot_de_passe VARCHAR(312) NOT NULL
@@ -122,7 +123,7 @@ def inserer_livres():
     builder = insertion_querry('livres', data, champs) 
     CURSEUR.executemany(builder['sql'], builder['val'])
     CURSEUR.reset()
-
+    
 def lister_chapitre(livre:int = 1):
     global BASETABLE
     BASETABLE = 'chapitres_livres'
