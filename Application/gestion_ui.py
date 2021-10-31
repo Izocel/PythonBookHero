@@ -62,7 +62,7 @@ def mysql_app_create_tables():
     CURSEUR.reset()
 
     # TABLE SAUVEGARDES_PARTIES
-    sql = '''CREATE TABLE IF NOT EXISTS sauvegardes_paties(
+    sql = '''CREATE TABLE IF NOT EXISTS sauvegardes_parties(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     id_usager INT NOT NULL,
     id_livre INT NOT NULL,
@@ -95,40 +95,61 @@ def list_data(table):
     list = fetch_CURSEUR(CURSEUR, True)
     return list
 
-def inserer_selection_chapitre():
-    data = [
-        [1, 1, "aaaaaaaaaaa"] ,
-        [1, 2, 'bbbbbbbbbbbbbbb'] ,
-        [1, 3, 'cccccccccccccc'] ,
-        [1, 4, 'ddddddddddddddd'] ,
-        [1, 5, 'eeeeeeeeeeeeeee'] ,
-        [1, 6, 'ffffffffffffffff'] ,
-        [1, 7, 'ggggggggggggggggggg'] ,
-        [1, 8, 'hhhhhhhhhhhhhhhhhh'] ,
-        [1, 9, 'iiiiiiiiiiiiiiiiiii'] ,
-        [1, 10, 'jjjjjjjjjjjjjjjjjj'] 
-    ]
-
-    champs = ['id_livre', 'numero', 'contenue']
-    builder = insertion_querry('chapitres_livres', data, champs) 
-    CURSEUR.executemany(builder['sql'], builder['val'])
-    CURSEUR.reset()
-
-def inserer_livres():
-    data = [
-        ['Les Maître des Ténèbres', 'esbf123456789', 'Joe Dever']
-    ]
-    
-    champs = ['titre', 'isbn', 'auteur']
-    builder = insertion_querry('livres', data, champs) 
-    CURSEUR.executemany(builder['sql'], builder['val'])
-    CURSEUR.reset()
-    
-def lister_chapitre(livre:int = 1):
+def inserer_chapitres_livres():
+    global CURSEUR
     global BASETABLE
     BASETABLE = 'chapitres_livres'
-    select_data = select_data_querry(BASETABLE)
-    CURSEUR.execute(select_data)
+
+    querry = select_data_querry(BASETABLE)
+    CURSEUR.execute(querry)
+    data = fetch_CURSEUR(CURSEUR)
+
+    if(len(data) == 0):
+
+        data = [
+            [1, 1, "aaaaaaaaaaa"],
+            [1, 2, 'bbbbbbbbbbbbbbb'],
+            [1, 3, 'cccccccccccccc'],
+            [1, 4, 'ddddddddddddddd'],
+            [1, 5, 'eeeeeeeeeeeeeee'],
+            [1, 6, 'ffffffffffffffff'],
+            [1, 7, 'ggggggggggggggggggg'],
+            [1, 8, 'hhhhhhhhhhhhhhhhhh'],
+            [1, 9, 'iiiiiiiiiiiiiiiiiii'],
+            [1, 10, 'jjjjjjjjjjjjjjjjjj'] 
+        ]
+        champs = ['id_livre', 'numero', 'contenue']
+
+        builder = insertion_querry(BASETABLE, data, champs) 
+        CURSEUR.executemany(builder['sql'], builder['val'])
+        CURSEUR.reset()
+
+def inserer_livres():
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'livres'
+
+    querry = select_data_querry(BASETABLE)
+    CURSEUR.execute(querry)
+    data = fetch_CURSEUR(CURSEUR)
+
+    if(len(data) == 0):
+        data = [
+            ['Les Maître des Ténèbres', 'esbf123456789', 'Joe Dever'],
+            ['Les Maître des Ténèbres II', 'e234dkvl67789', 'Joe Dever']
+        ]
+        champs = ['titre', 'isbn', 'auteur']
+
+        builder = insertion_querry(BASETABLE, data, champs) 
+        CURSEUR.executemany(builder['sql'], builder['val'])
+        CURSEUR.reset()
+
+def lister_chapitre(livre:int = 1):
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'chapitres_livres'
+    select_chapitres = select_data_querry(BASETABLE)
+    CURSEUR.execute(select_chapitres)
     chapitres = fetch_CURSEUR(CURSEUR)
 
     return chapitres

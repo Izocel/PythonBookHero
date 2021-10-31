@@ -32,13 +32,13 @@ class ECRAN_DEV(QDialog):
 
     def setup_logics(self, w_parent):
         bd_config = ECRAN_DEV.get_bd_credentials(self)
-                #Try 
+        #Try 
         mysql_app_connection(bd_config, True)
      
 
         mysql_app_create_tables()
         inserer_livres()
-        inserer_selection_chapitre()
+        inserer_chapitres_livres()
     
 
     def get_bd_credentials(self):
@@ -47,7 +47,7 @@ class ECRAN_DEV(QDialog):
         conn_fields['host'] = 'localhost'
         conn_fields['port'] = '3306'
         conn_fields['user'] = 'root' #TODO: Faire un user juste pour cette BD
-        conn_fields['password'] = 'mysql' #TODO: Temporaire pour le développement
+        conn_fields['password'] = getpass("Entrer le mot de passe mysql: \n ==> ") #TODO: Temporaire pour le développement
 
         return conn_fields
 
