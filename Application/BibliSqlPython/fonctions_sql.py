@@ -8,7 +8,6 @@ def __init__(self):
 # Mysql Connection class
 __MySqlConnType = _mysqlConnector.connection.MySQLConnection
 
-
 # Variables globales
 BD_CONNECTION = {}
 BD_CONFIG = {}
@@ -51,8 +50,8 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
     max_retry = min(max_retry, 15)
 
     for x in range(max_retry):
-        while( type(BD_CONNECTION) is not __MySqlConnType ):
-
+        while( type(BD_CONNECTION) is not __MySqlConnType): 
+                      
             BD_CONFIG = {
                 'host' : config_input['host'],
                 'user' : config_input['user'],
@@ -90,8 +89,23 @@ def show_tables_querry(database):
     querry = "SHOW TABLES FROM " + database
     return querry
 
-def select_data_querry(table):
-    querry = "SELECT * FROM ;" + table
+def select_data_querry(table:str, fields = '*', where = '', order = '', group = '',  limit = ''):
+
+    querry = "SELECT "+ fields + " FROM " + table
+
+    if(where != ''):
+        querry += " " + where
+
+    if(order != ''):
+        querry += " " + order
+
+    if(group != ''):
+        querry += " " + group
+
+    if(limit != ''):
+
+        querry += " " + limit
+
     return querry
 
 def select_colum_name_type_querry(table, database):

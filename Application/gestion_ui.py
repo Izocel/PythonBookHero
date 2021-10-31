@@ -18,9 +18,10 @@ def mysql_app_create_tables():
     CURSEUR.reset()
     
     # TABLE USAGERS
-    sql = '''CREATE TABLE IF NOT EXISTS Usagers(
+    sql = '''CREATE TABLE IF NOT EXISTS usagers(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     prenom VARCHAR(50) NOT NULL,
+    nom VARCHAR(50) NOT NULL,
     age TINYINT(3),
     courriel VARCHAR(255) NOT NULL,
     mot_de_passe VARCHAR(312) NOT NULL
@@ -29,7 +30,7 @@ def mysql_app_create_tables():
     CURSEUR.reset()
 
     # TABLE LIVRES
-    sql = '''CREATE TABLE IF NOT EXISTS Livres(
+    sql = '''CREATE TABLE IF NOT EXISTS livres(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     titre VARCHAR(150) NOT NULL,
     isbn VARCHAR(255) NOT NULL,
@@ -39,41 +40,40 @@ def mysql_app_create_tables():
     CURSEUR.reset()
 
     # TABLE CHAPITRES_LIVRES
-    sql = '''CREATE TABLE IF NOT EXISTS Chapitres_livres(
+    sql = '''CREATE TABLE IF NOT EXISTS chapitres_livres(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     id_livre INT NOT NULL,
     numero tinyint(4) NOT NULL,
     contenue TEXT NOT NULL,
-    FOREIGN KEY (id_livre) REFERENCES Livres(id)
+    FOREIGN KEY (id_livre) REFERENCES livres(id)
     )'''
     CURSEUR.execute(sql)
     CURSEUR.reset()
 
     # TABLE PERMISSIONS_LIVRES_USAGERS
-    sql = '''CREATE TABLE IF NOT EXISTS Permission_livres_usagers(
+    sql = '''CREATE TABLE IF NOT EXISTS permission_livres_usagers(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     id_usager INT NOT NULL,
     id_livre INT,
-    FOREIGN KEY (id_usager) REFERENCES Usagers(id),
-    FOREIGN KEY (id_livre) REFERENCES Livres(id)
+    FOREIGN KEY (id_usager) REFERENCES usagers(id),
+    FOREIGN KEY (id_livre) REFERENCES livres(id)
     )'''
     CURSEUR.execute(sql)
     CURSEUR.reset()
 
     # TABLE SAUVEGARDES_PARTIES
-    sql = '''CREATE TABLE IF NOT EXISTS Sauvegardes_paties(
+    sql = '''CREATE TABLE IF NOT EXISTS sauvegardes_parties(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     id_usager INT NOT NULL,
     id_livre INT NOT NULL,
     id_chapitre INT NOT NULL,
     page TINYINT(8),
-    FOREIGN KEY (id_usager) REFERENCES Usagers(id),
-    FOREIGN KEY (id_livre) REFERENCES Livres(id),
-    FOREIGN KEY (id_chapitre) REFERENCES Chapitres_livres(id)
+    FOREIGN KEY (id_usager) REFERENCES usagers(id),
+    FOREIGN KEY (id_livre) REFERENCES livres(id),
+    FOREIGN KEY (id_chapitre) REFERENCES chapitres_livres(id)
     )'''
     CURSEUR.execute(sql)
     CURSEUR.reset()
-
 
 
 def mysql_app_connection(config_input:dict = {}, autocommit:bool = False):
@@ -95,3 +95,61 @@ def list_data(table):
     list = fetch_CURSEUR(CURSEUR, True)
     return list
 
+def inserer_chapitres_livres():
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'chapitres_livres'
+
+    querry = select_data_querry(BASETABLE)
+    CURSEUR.execute(querry)
+    data = fetch_CURSEUR(CURSEUR)
+
+    if(len(data) == 0):
+
+        data = [
+            [1, 1, "aaaaaaaaaaa"],
+            [1, 2, 'bbbbbbbbbbbbbbb'],
+            [1, 3, 'cccccccccccccc'],
+            [1, 4, 'ddddddddddddddd'],
+            [1, 5, 'eeeeeeeeeeeeeee'],
+            [1, 6, 'ffffffffffffffff'],
+            [1, 7, 'ggggggggggggggggggg'],
+            [1, 8, 'hhhhhhhhhhhhhhhhhh'],
+            [1, 9, 'iiiiiiiiiiiiiiiiiii'],
+            [1, 10, 'jjjjjjjjjjjjjjjjjj'] 
+        ]
+        champs = ['id_livre', 'numero', 'contenue']
+
+        builder = insertion_querry(BASETABLE, data, champs) 
+        CURSEUR.executemany(builder['sql'], builder['val'])
+        CURSEUR.reset()
+
+def inserer_livres():
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'livres'
+
+    querry = select_data_querry(BASETABLE)
+    CURSEUR.execute(querry)
+    data = fetch_CURSEUR(CURSEUR)
+
+    if(len(data) == 0):
+        data = [
+            ['Les Maître des Ténèbres', 'esbf123456789', 'Joe Dever'],
+            ['Les Maître des Ténèbres II', 'e234dkvl67789', 'Joe Dever']
+        ]
+        champs = ['titre', 'isbn', 'auteur']
+
+        builder = insertion_querry(BASETABLE, data, champs) 
+        CURSEUR.executemany(builder['sql'], builder['val'])
+        CURSEUR.reset()
+
+def lister_chapitre(livre:int = 1):
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'chapitres_livres'
+    select_chapitres = select_data_querry(BASETABLE)
+    CURSEUR.execute(select_chapitres)
+    chapitres = fetch_CURSEUR(CURSEUR)
+
+    return chapitres

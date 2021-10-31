@@ -17,12 +17,13 @@ s_widgets = QStackedWidget()
 ecran_dev = ECRAN_DEV()
 ecran_dev.setup_logics(s_widgets)
 
-
 # instance 2 .......
-
+ecran_chapitre = ECRAN_CHAPITRE()
+ecran_chapitre.setup_logics(s_widgets)
 
 # Ajput des widgets 'layers'
 s_widgets.setGeometry(ecran_dev.geometry())
+s_widgets.addWidget(ecran_chapitre)
 s_widgets.addWidget(ecran_dev)
 s_widgets.show()
 
