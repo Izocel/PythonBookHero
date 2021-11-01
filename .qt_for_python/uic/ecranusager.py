@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'e:\OneDrive - Cégep de Victoriaville\TransfertSchool\2021-2022\BD-2\PythonBookHero\BookHeroProjectDesigner\ecranusager.ui'
+# Form implementation generated from reading ui file 'e:\OneDrive - Cégep de Victoriaville\TransfertSchool\2021-2022\BD-2\PythonBookHero\Application\Bibli_ui\ecranusager.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.5
 #

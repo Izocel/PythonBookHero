@@ -52,6 +52,7 @@ def mysql_app_insert_user():
 
 
 def mysql_app_create_tables():
+    global CURSEUR
     BD = get_config('database')
 
     # BASE DE DONNÉE
@@ -139,3 +140,62 @@ def list_data(table):
     CURSEUR.execute(querry)
     list = fetch_CURSEUR(CURSEUR, True)
     return list
+
+def inserer_chapitres_livres():
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'chapitres_livres'
+
+    querry = select_data_querry(BASETABLE)
+    CURSEUR.execute(querry)
+    data = fetch_CURSEUR(CURSEUR)
+
+    if(len(data) == 0):
+
+        data = [
+            [1, 1, "aaaaaaaaaaa"],
+            [1, 2, 'bbbbbbbbbbbbbbb'],
+            [1, 3, 'cccccccccccccc'],
+            [1, 4, 'ddddddddddddddd'],
+            [1, 5, 'eeeeeeeeeeeeeee'],
+            [1, 6, 'ffffffffffffffff'],
+            [1, 7, 'ggggggggggggggggggg'],
+            [1, 8, 'hhhhhhhhhhhhhhhhhh'],
+            [1, 9, 'iiiiiiiiiiiiiiiiiii'],
+            [1, 10, 'jjjjjjjjjjjjjjjjjj'] 
+        ]
+        champs = ['id_livre', 'numero', 'contenue']
+
+        builder = insertion_querry(BASETABLE, data, champs) 
+        CURSEUR.executemany(builder['sql'], builder['val'])
+        CURSEUR.reset()
+
+def inserer_livres():
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'livres'
+
+    querry = select_data_querry(BASETABLE)
+    CURSEUR.execute(querry)
+    data = fetch_CURSEUR(CURSEUR)
+
+    if(len(data) == 0):
+        data = [
+            ['Les Maître des Ténèbres', 'esbf123456789', 'Joe Dever'],
+            ['Les Maître des Ténèbres II', 'e234dkvl67789', 'Joe Dever']
+        ]
+        champs = ['titre', 'isbn', 'auteur']
+
+        builder = insertion_querry(BASETABLE, data, champs) 
+        CURSEUR.executemany(builder['sql'], builder['val'])
+        CURSEUR.reset()
+
+def lister_chapitre(livre:int = 1):
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'chapitres_livres'
+    select_chapitres = select_data_querry(BASETABLE)
+    CURSEUR.execute(select_chapitres)
+    chapitres = fetch_CURSEUR(CURSEUR)
+
+    return chapitres

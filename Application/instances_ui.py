@@ -1,4 +1,5 @@
 import os
+from typing import Concatenate
 from PyQt5 import *
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore, QtGui
@@ -14,9 +15,9 @@ from gestion_ui import *
 #### ECRAN_USAGER ##############################################
 # Extension de la classe provenant du designer (ecranusager.ui)
 # Proprietées connu sur ECRAN_USAGER
-    #
-    #
-    #
+    # ?
+    # ?
+    # ?
 #
 class ECRAN_USAGER(QDialog):
 
@@ -132,3 +133,41 @@ class ECRAN_ACCEUIL(QDialog):
             else: # Ajouter un message à l'écran de mauvaise infos....
                 self.app_disconnect()
                 self.label_mauvaise_infos.show()
+            
+#### ECRAN_CHAPITRE ##############################################
+# Extension de la classe provenant du designer (ecranchapitre.ui)
+# Proprietées connu sur ECRAN_CHAPITRE
+    # ?
+    # ?
+    # ?
+#
+class ECRAN_CHAPITRE(QDialog):
+
+    def __init__(self):
+        super(ECRAN_CHAPITRE, self).__init__()
+        ui_path =  os.path.dirname(os.path.abspath(__file__))
+        ui_path += '\\Bibli_ui\\selectionchapitres.ui'
+        loadUi(ui_path, self)
+
+    def setup_logics(self, w_parent):
+        self.field_selection_chapitre()
+        #self.connectionbtn.clicked.connect(lambda:self.connect_actionbtn())
+        pass
+
+    def field_selection_chapitre(self):
+        index = 0
+
+        self.selection_chapitre_comboBox.addItem("")
+        self.selection_chapitre_comboBox.setItemText(index, "Sélectionnez un chapitre")
+        index +=1
+
+        self.selection_chapitre_comboBox.addItem("")
+        self.selection_chapitre_comboBox.setItemText(index, "Nous somme désolés, aucune données disponible")
+
+
+        chapitres = lister_chapitre()
+        if(len(chapitres) > 0):
+            for champs in chapitres:
+                self.selection_chapitre_comboBox.addItem("")
+                self.selection_chapitre_comboBox.setItemText(index, "chapitre " + str(champs[2]))
+                index +=1

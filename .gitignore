@@ -1,6 +1,6 @@
 .history*
 __pycache__
 *.pyc
-
+setting.json
 
 rvd_personnel

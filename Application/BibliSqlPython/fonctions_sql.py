@@ -65,7 +65,7 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
             #TODO:.dontDieOnBadInfosPlz()
             BD_CONNECTION = _mysqlConnector.connect(**BD_CONFIG)
             config_warning(BD_CONNECTION)
-    BD_CONFIG['database'] =  'python_book_hero'
+    BD_CONFIG['database'] = 'python_book_hero'
     CURSEUR = BD_CONNECTION.cursor()
     print("\n La session SQL est établie")
     return CURSEUR
@@ -350,24 +350,6 @@ def update_commit_check(data, querry, cond, basetable):
             print("Données modifiés !")
         else:
             pass
-
-def delete_commit_check(querry):
-
-    if(BD_CONNECTION.autocommit == True):
-
-        # Try 
-        CURSEUR.execute(querry)
-        # Catch
-
-    else:
-
-            # Try 
-            CURSEUR.execute(querry)
-            # Catch
-            BD_CONNECTION.commit()
-            print("\n Donnée supprimé !!!")
-
-
 
 def hash_sha2_data(datalist:list[str] = [], hash_length:int = 256):
 
