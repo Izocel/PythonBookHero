@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1426</width>
+    <width>1430</width>
     <height>903</height>
    </rect>
   </property>
@@ -32,9 +32,15 @@ background: qlineargradient(spread:pad, x1:0.091, y1:0.101636, x2:0.991379, y2:0
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>401</width>
+      <width>541</width>
       <height>71</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
     <property name="styleSheet">
      <string notr="true">font: 36pt &quot;MS Shell Dlg 2&quot;; color:rgb(255, 255, 255)</string>
@@ -73,9 +79,15 @@ font: 14pt &quot;MS Shell Dlg 2&quot;;
      <rect>
       <x>30</x>
       <y>440</y>
-      <width>291</width>
+      <width>341</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
     <property name="font">
      <font>

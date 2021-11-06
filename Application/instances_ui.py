@@ -150,7 +150,7 @@ class ECRAN_CHAPITRE(QDialog):
         loadUi(ui_path, self)
 
     def setup_logics(self, w_parent):
-        self.field_selection_chapitre()
+        #self.field_selection_chapitre() <-- ## Migrer vers une autre appel ou changer son setup_logics() de place...
         #self.connectionbtn.clicked.connect(lambda:self.connect_actionbtn())
         pass
 
