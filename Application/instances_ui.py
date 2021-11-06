@@ -75,11 +75,11 @@ class ECRAN_ACCEUIL(QDialog):
         
     
     def app_disconnect(self):
-            global logged_in
-            if(logged_in):
-                logged_in = mysql_app_disconnection()
-
-            return logged_in
+        global logged_in
+        if(logged_in):
+            logged_in = not mysql_app_disconnection()
+            
+        return logged_in
         
     def app_connect(self):
         global logged_in
