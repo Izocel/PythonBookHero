@@ -1,19 +1,66 @@
 # Workspace related
-from logging import currentframe
 from BibliSqlPython.fonctions_sql import *
 
-BASETABLE = ''
-CURSEUR = {}
+
+def verif_connection_usager(**user_credentials):
+
+    if 'courriel' in user_credentials:
+        courriel = user_credentials['courriel']
+
+    if 'hashmotpasse' in user_credentials:
+        mdp_hash = user_credentials['hashmotpasse']
+
+    if(courriel and mdp_hash):
+        global CURSEUR
+        global BASETABLE
+
+        BASETABLE = 'usagers'
+        quer = select_data_querry(BASETABLE, 'id', "where courriel = %s and mot_de_passe = %s",'','','limit 1')
+
+        CURSEUR.execute(quer, (courriel,mdp_hash) )
+        usager = CURSEUR.fetchone()
+        return usager
+
+    return False
+
+def mysql_app_insert_user():
+    global BASETABLE
+    global CURSEUR
+    BASETABLE = 'usagers'
+
+    querry_usagers = select_data_querry(BASETABLE)
+    CURSEUR.execute(querry_usagers)
+    usagers = fetch_CURSEUR(CURSEUR)
+
+    if(len(usagers) == 0):
+
+        data_usager = [
+            ['Dumoulin', 'Bob', 13, 'triangle1232009@Hotmail.com', 'qwerty123'],
+            ['Dumoulin', 'John', 18, 'whateverid@Hotmail.com', 'qwerty456'],
+            ['Dumoulin', 'Lulu', 21, 'imashutthisoff@ny.com', 'qwerty789'],
+            ['Dumoulin', 'Allan', 32, 'momoiscool@Hotmail.com', 'qwerty159'],
+        ]
+
+        for passwordAt in data_usager:
+            passwordAt[4] = hash_sha2_data([passwordAt[4]])[0]
+
+        champs = ['nom', 'prenom', 'age', 'courriel', 'mot_de_passe'] 
+
+        builder = insertion_querry(BASETABLE, data_usager, champs)
+        CURSEUR.executemany(builder['sql'], builder['val'])
+        CURSEUR.reset()
+
 
 def mysql_app_create_tables():
     global CURSEUR
+    BD = get_config('database')
 
     # BASE DE DONNÉE
-    sql = "CREATE DATABASE IF NOT EXISTS python_book_hero"
+    sql = "CREATE DATABASE IF NOT EXISTS " + BD
     CURSEUR.execute(sql)
     CURSEUR.reset()
 
-    sql = "USE python_book_hero"
+    sql = "USE " + BD
     CURSEUR.execute(sql)
     CURSEUR.reset()
     
@@ -24,7 +71,7 @@ def mysql_app_create_tables():
     nom VARCHAR(50) NOT NULL,
     age TINYINT(3),
     courriel VARCHAR(255) NOT NULL,
-    mot_de_passe VARCHAR(312) NOT NULL
+    mot_de_passe VARCHAR(512) NOT NULL
     )'''
     CURSEUR.execute(sql)
     CURSEUR.reset()
@@ -86,8 +133,7 @@ def mysql_app_disconnection():
     global CURSEUR
     CURSEUR.reset()
     CURSEUR = {}
-    disconnect_from_mysql()
-    return True
+    return disconnect_from_mysql()
 
 def list_data(table):
     querry = select_data_querry(table)

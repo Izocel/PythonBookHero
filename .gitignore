@@ -1,6 +1,7 @@
 .history*
-__pycache__
+__pycache__*
 *.pyc
+setting.json
+.qt_for_python*
 
-
-rvd_personnel
+rvd_personnel*

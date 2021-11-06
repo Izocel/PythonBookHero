@@ -1,6 +1,6 @@
 from mysql import connector as _mysqlConnector # Alias
 from getpass import getpass
-
+import hashlib
 
 def __init__(self):
     pass
@@ -8,13 +8,15 @@ def __init__(self):
 # Mysql Connection class
 __MySqlConnType = _mysqlConnector.connection.MySQLConnection
 
+
 # Variables globales
 BD_CONNECTION = {}
 BD_CONFIG = {}
 CURSEUR = {}
+BASETABLE = ''
 
 def get_config(key:str = ''):
-
+    global BD_CONFIG
     if(key == ''):
         return BD_CONFIG
     else:
@@ -50,8 +52,8 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
     max_retry = min(max_retry, 15)
 
     for x in range(max_retry):
-        while( type(BD_CONNECTION) is not __MySqlConnType): 
-                      
+        while( type(BD_CONNECTION) is not __MySqlConnType ):
+            
             BD_CONFIG = {
                 'host' : config_input['host'],
                 'user' : config_input['user'],
@@ -63,6 +65,7 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
             #TODO:.dontDieOnBadInfosPlz()
             BD_CONNECTION = _mysqlConnector.connect(**BD_CONFIG)
             config_warning(BD_CONNECTION)
+    BD_CONFIG['database'] = 'python_book_hero'
     CURSEUR = BD_CONNECTION.cursor()
     print("\n La session SQL est établie")
     return CURSEUR
@@ -89,8 +92,7 @@ def show_tables_querry(database):
     querry = "SHOW TABLES FROM " + database
     return querry
 
-def select_data_querry(table:str, fields = '*', where = '', order = '', group = '',  limit = ''):
-
+def select_data_querry(table:str, fields:str = '*', where:str = '', order:str = '', group:str = '',  limit:str = ''):
     querry = "SELECT "+ fields + " FROM " + table
 
     if(where != ''):
@@ -103,7 +105,6 @@ def select_data_querry(table:str, fields = '*', where = '', order = '', group = 
         querry += " " + group
 
     if(limit != ''):
-
         querry += " " + limit
 
     return querry
@@ -131,7 +132,7 @@ def CURSEUR_name_and_type(CURSEUR, table, database):
 
     return {'querry': tpye_and_colum_querry, 'results': table_resultat, 'types': table_type, 'names': table_col}
 
-def insertion_querry(table, inserts = [[]], champs = []):
+def insertion_querry(table:str, inserts = [[]], champs = []):
 
     querry = "INSERT INTO " + table
 
@@ -219,70 +220,6 @@ def update_querry(table :str, updates :list[list], champs :list, conds_list :lis
         'val' : valeursSql
     }
 
-def get_input_question(champ, type):
-    return "\n(Laisser vide pour default/ancienne_valeur)\nEntrée la valeur pour "+ champ +".\n type: " + type +" ===> "
-
-def get_cond_question(champ, type):
-    return "\n(Laisser vide pour ignorer)\nEntrée la valeur comparative pour "+ champ +".\n type: " + type +" ===> "
-
-def dataForm(table :str, database :str, CURSEUR):
-
-    name_n_type_list = CURSEUR_name_and_type(CURSEUR, table, database)['results']
-
-    champs:list = []
-    valeur:list[list] = [[]]
-    result:dict[champs,valeur] = {}
-
-    u_input = ""
-
-    print("\nEntrée les valeurs d'insert/update. Laisser vide pour default/ancienne_valeur")
-    for string_list in name_n_type_list:
-
-        champ = string_list[0]
-        sql_type = string_list[1]
-
-        question = get_input_question(champ, sql_type)
-        u_input = input(question)
-
-        if(u_input != ""):
-            formated_input = convert_string_to_sql_type(u_input, sql_type)
-
-            if(formated_input):
-                champs.append(champ)
-                valeur[0].append(formated_input)
-
-    result = { 'champs' : champs, 'valeurs': valeur}
-    return result
-
-def condForm(table :str, database :str, CURSEUR):
-
-    name_n_type_list = CURSEUR_name_and_type(CURSEUR, table, database)['results']
-
-    champs:list = []
-    valeur:list[list] = [[]]
-    result:dict[champs,valeur] = {}
-
-    u_input = ""
-
-    print("\nEntrée les valeurs conditionelles. Laisser vide pour ne pas utiliser ce champs en condition.")
-    for string_list in name_n_type_list:
-
-        champ = string_list[0]
-        sql_type = string_list[1]
-
-        question = get_cond_question(champ, sql_type)
-        u_input = input(question)
-
-        if(u_input != ""):
-            formated_input = convert_string_to_sql_type(u_input, sql_type)
-
-            if(formated_input):
-                champs.append(champ)
-                valeur[0].append(formated_input)
-
-    result = { 'cond_champs' : champs, 'cond_valeurs': valeur}
-    return result
-
 def convert_string_to_sql_type(input_str: str, sql_type_str: str):
 
     if( sql_type_str.startswith("char") ):
@@ -326,7 +263,6 @@ def dataTypeStringNotation(value: any):
     return ''
 
 def fetch_CURSEUR(CURSEUR, print_me = False):
-
     if(print_me == True):
         print("\n")
 
@@ -415,24 +351,36 @@ def update_commit_check(data, querry, cond, basetable):
         else:
             pass
 
-def delete_commit_check(querry):
+def hash_sha2_data(datalist:list[str] = [], hash_length:int = 256):
 
-    if(BD_CONNECTION.autocommit == True):
+    hashes = []
 
-        # Try 
-        CURSEUR.execute(querry)
-        # Catch
-        
-        print("\n Donnée supprimé !!!")
-    else:
+    if hash_length == 224:
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha224(encoded)
+            hashes.append(result.hexdigest())
 
-        u_input = input("\n Êtes-vous certains de vouloir supprimer cette donnée? (y/n)\n ==> ")
-        if(u_input == 'y'):
+    elif hash_length == 384:
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha384(encoded)
+            hashes.append(result.hexdigest())
 
-            # Try 
-            CURSEUR.execute(querry)
-            # Catch
-            BD_CONNECTION.commit()
-            print("\n Donnée supprimé !!!")
+    elif hash_length == 512:
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha512(encoded)
+            hashes.append(result.hexdigest())
 
+    else: # sha256 if hash_length not supported
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha256(encoded)
+            hashes.append(result.hexdigest())
 
+    return hashes
