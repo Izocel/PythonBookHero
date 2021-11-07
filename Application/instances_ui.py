@@ -48,7 +48,6 @@ class ECRAN_USAGER(QDialog):
     def setup_logics(self, w_parent):
         global parent
         parent = w_parent
-
         self.deconnectionpushButton.clicked.connect(lambda:self.deconnection_usagers_btnaction())
 
 
@@ -59,6 +58,11 @@ class ECRAN_USAGER(QDialog):
         ecran_acceuil.setup_logics(parent)
         parent.setCurrentIndex(parent.currentIndex()-1)
         parent.setGeometry(loginGeo)
+
+    def fetch_data_ecran(self, usager_id:int) -> 0:
+        livres = liste_livre_usager(usager_id)
+        saves = lister_sauvegardes_usager(usager_id)
+        bob = 4
 
 
 #### ECRAN_ACCEUIL ##############################################
@@ -86,7 +90,6 @@ class ECRAN_ACCEUIL(QDialog):
         global logged_in
         global parent
         parent = w_parent
-
         self.label_mauvaise_infos.hide()
         self.connectionpushButton.clicked.connect(lambda:self.connection_usagers_btnaction())
 
@@ -108,6 +111,7 @@ class ECRAN_ACCEUIL(QDialog):
             logged_in = True
             mysql_app_create_tables()
             mysql_app_insert_user()
+            
             
         return logged_in
 
@@ -141,6 +145,12 @@ class ECRAN_ACCEUIL(QDialog):
             acces_usager_promu = verif_connection_usager(**user_cred)
 
             if(acces_usager_promu):
+
+                user_id = acces_usager_promu[0]
+
+                ecran_usager = parent.findChild(QDialog, 'EcranUsager')
+                ecran_usager.fetch_data_ecran(user_id)
+
                 self.label_mauvaise_infos.hide()
                 self.connectionpushButton.disconnect()
 
@@ -148,6 +158,7 @@ class ECRAN_ACCEUIL(QDialog):
                 parent.setCurrentIndex(parent.currentIndex()+1)
                 parent.setGeometry(windowsGeo)
                 parent.showMaximized()
+
             else: # Ajouter un message à l'écran de mauvaise infos....
                 self.app_disconnect()
                 self.label_mauvaise_infos.show()

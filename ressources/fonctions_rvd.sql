@@ -12,37 +12,30 @@ DECLARE usager int;
 DECLARE livre int;
 DECLARE resultat bool;
 
+SET resultat = 0;
+
 SET deja_present = (SELECT id_livre FROM permission_livres_usagers
     WHERE id_usager = usager_id 
     and id_livre = livre_id);
 
-if not deja_present THEN
+if ISNULL(deja_present) THEN
 
-    SET usager = (SELECT id FROM usagers
-    WHERE id = usager_id);
+    SET usager = (SELECT id FROM usagers WHERE id = usager_id);
 
     SET livre = (SELECT id FROM livres
     WHERE id = livre_id);
 
-    if usager AND livre THEN
+    if not ISNULL(usager) AND not ISNULL(livre) THEN
 
-        INSERT id_usager, id_livre INTO permission_livres_usagers values(
+        INSERT INTO permission_livres_usagers (id_usager, id_livre) values(
             usager_id,
             livre_id
         );
-        set resultat = 1;
-    ELSE THEN
-        SET resultat = 0;
+        SET resultat = 1;
     END IF;
-
-ELSE THEN
-   SET resultat = 2;
 END IF;
-
 return resultat;
 END $$
-
-
 DELIMITER ;;
 
 
