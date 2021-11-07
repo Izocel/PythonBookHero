@@ -115,7 +115,7 @@ def mysql_app_create_tables():
     id_livre INT NOT NULL,
     id_chapitre INT NOT NULL,
     page TINYINT(8),
-    date_partie DATETIME NN DEFAULT CURRENT_TIMESTAMP,
+    date_partie DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_usager) REFERENCES usagers(id),
     FOREIGN KEY (id_livre) REFERENCES livres(id),
     FOREIGN KEY (id_chapitre) REFERENCES chapitres_livres(id)
