@@ -5,7 +5,7 @@ from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import *
 
-from screeninfo import get_monitors     ## ---> pip install screeninfo
+from screeninfo import get_monitors
 
 # Workspace Related #
 from gestion_ui import *
@@ -111,11 +111,13 @@ class ECRAN_ACCEUIL(QDialog):
             logged_in = True
             mysql_app_create_tables()
             mysql_app_insert_user()
+            inserer_livres()
+            inserer_chapitres_livres()
             
             
         return logged_in
 
-    def get_bd_credentials(self):
+    def get_bd_credentials(self) -> Dict[str]:
 
         conn_fields = {}
         conn_fields['host'] = 'localhost'
@@ -126,7 +128,7 @@ class ECRAN_ACCEUIL(QDialog):
         return conn_fields
 
 
-    def get_usager_credentials(self):
+    def get_usager_credentials(self) -> Dict[str]:
 
         conn_fields = {}
         conn_fields['courriel'] = self.courriel_lineEdit.text()
@@ -134,7 +136,7 @@ class ECRAN_ACCEUIL(QDialog):
 
         return conn_fields
 
-    def connection_usagers_btnaction(self):
+    def connection_usagers_btnaction(self) -> 0:
         global logged_in
 
         if(not logged_in):

@@ -153,6 +153,9 @@ def inserer_chapitres_livres():
 
     if(len(data) == 0):
 
+
+        # Une fonction est présente au niveau back-end pour insérer des chapitre ;)
+        # Il faudra l'utiliser ici !
         data = [
             [1, 1, "aaaaaaaaaaa"],
             [1, 2, 'bbbbbbbbbbbbbbb'],
