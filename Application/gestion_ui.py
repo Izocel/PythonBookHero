@@ -115,6 +115,7 @@ def mysql_app_create_tables():
     id_livre INT NOT NULL,
     id_chapitre INT NOT NULL,
     page TINYINT(8),
+    date_partie DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_usager) REFERENCES usagers(id),
     FOREIGN KEY (id_livre) REFERENCES livres(id),
     FOREIGN KEY (id_chapitre) REFERENCES chapitres_livres(id)
@@ -199,3 +200,26 @@ def lister_chapitre(livre:int = 1):
     chapitres = fetch_CURSEUR(CURSEUR)
 
     return chapitres
+
+
+def liste_livre_usager(usager_id:int) -> List[List]:
+    global CURSEUR
+    
+    q = "SELECT livres.id,titre,auteur FROM permission_livres_usagers "
+    q += "INNER JOIN livres ON id_livre = livres.id "
+    q += f"WHERE id_usager = {usager_id} ORDER BY id;"
+
+    CURSEUR.execute(q)
+    return fetch_CURSEUR(CURSEUR)
+
+
+def lister_sauvegardes_usager(usager_id:int) -> List[List]:
+    global CURSEUR
+
+    q = "SELECT date_partie, page, numero, titre FROM sauvegardes_parties "
+    q += "INNER JOIN chapitres_livres ON id_chapitre = chapitres_livres.id "
+    q += "INNER JOIN livres ON chapitres_livres.id_livre = livres.id "
+    q += f"WHERE id_usager = {usager_id};"
+
+    CURSEUR.execute(q)
+    return fetch_CURSEUR(CURSEUR)

@@ -5,11 +5,27 @@ from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import *
 
+from screeninfo import get_monitors     ## ---> pip install screeninfo
+
 # Workspace Related #
 from gestion_ui import *
 
 
 # CLASSES DE DIALOGUES #######################################################
+
+for m in get_monitors():
+    x= int(m.x)
+    y = int(m.y)
+    w= int(m.width)
+    h = int(m.height)
+
+    w33 = int(w/3)
+    h75 = int(h/1.5)
+
+    if(m.is_primary):
+        windowsGeo = QtCore.QRect(m.x, m.y+25, w, h-30)
+        loginGeo = QtCore.QRect(m.x, m.y+25, w33, h75)
+
 
 
 #### ECRAN_USAGER ##############################################
@@ -32,16 +48,21 @@ class ECRAN_USAGER(QDialog):
     def setup_logics(self, w_parent):
         global parent
         parent = w_parent
-
         self.deconnectionpushButton.clicked.connect(lambda:self.deconnection_usagers_btnaction())
 
-    
+
     def deconnection_usagers_btnaction(self):
         global parent
         ecran_acceuil = parent.findChild(QDialog, 'EcranAcceuil')
         ecran_acceuil.app_disconnect()
         ecran_acceuil.setup_logics(parent)
         parent.setCurrentIndex(parent.currentIndex()-1)
+        parent.setGeometry(loginGeo)
+
+    def fetch_data_ecran(self, usager_id:int) -> 0:
+        livres = liste_livre_usager(usager_id)
+        saves = lister_sauvegardes_usager(usager_id)
+        bob = 4
 
 
 #### ECRAN_ACCEUIL ##############################################
@@ -69,10 +90,9 @@ class ECRAN_ACCEUIL(QDialog):
         global logged_in
         global parent
         parent = w_parent
-
         self.label_mauvaise_infos.hide()
         self.connectionpushButton.clicked.connect(lambda:self.connection_usagers_btnaction())
-        
+
     
     def app_disconnect(self):
         global logged_in
@@ -92,6 +112,7 @@ class ECRAN_ACCEUIL(QDialog):
             mysql_app_create_tables()
             mysql_app_insert_user()
             
+            
         return logged_in
 
     def get_bd_credentials(self):
@@ -100,7 +121,7 @@ class ECRAN_ACCEUIL(QDialog):
         conn_fields['host'] = 'localhost'
         conn_fields['port'] = '3306'
         conn_fields['user'] = 'root' #TODO: Faire un user juste pour cette BD
-        conn_fields['password'] = getpass("Entrer le mot de passe mysql: \n ==> ")
+        conn_fields['password'] = '@mysqlroot2022'  #getpass("Entrer le mot de passe mysql: \n ==> ")
 
         return conn_fields
 
@@ -124,11 +145,19 @@ class ECRAN_ACCEUIL(QDialog):
             acces_usager_promu = verif_connection_usager(**user_cred)
 
             if(acces_usager_promu):
+
+                user_id = acces_usager_promu[0]
+
+                ecran_usager = parent.findChild(QDialog, 'EcranUsager')
+                ecran_usager.fetch_data_ecran(user_id)
+
                 self.label_mauvaise_infos.hide()
                 self.connectionpushButton.disconnect()
 
                 ######### CHANGER DE PAGE  ############
                 parent.setCurrentIndex(parent.currentIndex()+1)
+                parent.setGeometry(windowsGeo)
+                parent.showMaximized()
 
             else: # Ajouter un message à l'écran de mauvaise infos....
                 self.app_disconnect()

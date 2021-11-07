@@ -1,3 +1,4 @@
+from typing import *
 from mysql import connector as _mysqlConnector # Alias
 from getpass import getpass
 import hashlib
@@ -262,7 +263,7 @@ def dataTypeStringNotation(value: any):
 
     return ''
 
-def fetch_CURSEUR(CURSEUR, print_me = False):
+def fetch_CURSEUR(CURSEUR, print_me = False) -> List[List]:
     if(print_me == True):
         print("\n")
 

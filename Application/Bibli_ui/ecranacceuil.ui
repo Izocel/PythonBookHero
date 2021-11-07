@@ -6,242 +6,375 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1426</width>
-    <height>903</height>
+    <width>600</width>
+    <height>800</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QWidget" name="bgwidget" native="true">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1451</width>
-     <height>911</height>
-    </rect>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
    </property>
-   <property name="styleSheet">
-    <string notr="true">QWidget#bgwidget{
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMaximumSize</enum>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="bgwidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget#bgwidget{
 background: qlineargradient(spread:pad, x1:0.091, y1:0.101636, x2:0.991379, y2:0.977, stop:0 rgba(100, 25, 2, 255), stop:1 rgba(255, 255, 255, 255));
 
 }
 </string>
-   </property>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>120</y>
-      <width>531</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 36pt &quot;MS Shell Dlg 2&quot;; color:rgb(255, 255, 255)</string>
-    </property>
-    <property name="text">
-     <string>Python Book Hero</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>230</y>
-      <width>501</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;color:rgb(255, 255, 255)</string>
-    </property>
-    <property name="text">
-     <string>Entrez vos informations de connection</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="connectionpushButton">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>500</y>
-      <width>341</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border-radius:20px;
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-width: 0px; border-style: solid;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignJustify|Qt::AlignVCenter</set>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,0,0,0,0,0,0">
+           <property name="spacing">
+            <number>8</number>
+           </property>
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMaximumSize</enum>
+           </property>
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>41</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color:rgb(255, 255, 255)</string>
+             </property>
+             <property name="text">
+              <string>Python Book Hero</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>MS Shell Dlg 2</family>
+               <pointsize>24</pointsize>
+               <weight>50</weight>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color:rgb(255, 255, 255)</string>
+             </property>
+             <property name="text">
+              <string>Entrez vos informations de connection</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_courriel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>MS Shell Dlg 2</family>
+               <pointsize>20</pointsize>
+               <weight>50</weight>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>Courriel</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="courriel_lineEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>18</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color: black;
+background-color:rgba(255,255,255);
+border-width: 1px; border-style: solid</string>
+             </property>
+             <property name="text">
+              <string>triangle1232009@hotmail.com</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_mdp">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>MS Shell Dlg 2</family>
+               <pointsize>20</pointsize>
+               <weight>50</weight>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Mot de passe</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="motdepasse_lineEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>MS Shell Dlg 2</family>
+               <pointsize>18</pointsize>
+               <weight>50</weight>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color: black;
+background-color:rgba(255,255,255);
+border-width: 1px; border-style: solid</string>
+             </property>
+             <property name="text">
+              <string>qwerty123</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="connectionpushButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>20</pointsize>
+              </font>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border-radius:20px;
 background-color: rgb(170, 255, 255);
-font: 14pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Connection</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="motdepasse_lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>431</y>
-      <width>341</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:rgba(0,0,0,0);
-font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>qwerty123</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_courriel">
-    <property name="geometry">
-     <rect>
-      <x>523</x>
-      <y>290</y>
-      <width>211</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="font">
-     <font>
-      <family>MS Shell Dlg 2</family>
-      <pointsize>16</pointsize>
-      <weight>50</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Courriel</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="courriel_lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>330</y>
-      <width>341</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:rgba(0,0,0,0);
-font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>triangle1232009@hotmail.com</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_mdp">
-    <property name="geometry">
-     <rect>
-      <x>521</x>
-      <y>390</y>
-      <width>201</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="font">
-     <font>
-      <family>MS Shell Dlg 2</family>
-      <pointsize>16</pointsize>
-      <weight>50</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Mot de passe</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_mauvaise_infos">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>570</y>
-      <width>801</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="font">
-     <font>
-      <family>MS Shell Dlg 2</family>
-      <pointsize>16</pointsize>
-      <weight>50</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;
-color: red;
-background: rgba(10,10,10,55);</string>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Box</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Plain</enum>
-    </property>
-    <property name="lineWidth">
-     <number>-1</number>
-    </property>
-    <property name="text">
-     <string>* Oups, cette combinaison n'à pu être retrouvée.</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-  </widget>
+</string>
+             </property>
+             <property name="text">
+              <string>Connection</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>80</width>
+               <height>80</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_mauvaise_infos">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>MS Shell Dlg 2</family>
+               <pointsize>18</pointsize>
+               <weight>50</weight>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color: red;
+background: rgba(10,10,10,40);</string>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::Box</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="lineWidth">
+              <number>-1</number>
+             </property>
+             <property name="text">
+              <string>* Oups, cette combinaison n'à pu être retrouvée.</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
