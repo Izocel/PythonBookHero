@@ -198,7 +198,7 @@ def lister_chapitre(livre:int = 1):
     global CURSEUR
     global BASETABLE
     BASETABLE = 'chapitres_livres'
-    select_chapitres = select_data_querry(BASETABLE)
+    select_chapitres = select_data_querry(BASETABLE, "*", "", "ORDER BY numero")
     CURSEUR.execute(select_chapitres)
     chapitres = fetch_CURSEUR(CURSEUR)
 
@@ -250,3 +250,12 @@ def attribuer_livre_par_default() -> int:
             resultat = 0
 
     return resultat
+
+def field_fenetre_chapitre(self):
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'chapitres_livres'
+    querry = select_data_querry(BASETABLE, "*", "", "ORDER BY numero")
+    CURSEUR.execute(querry)
+    chapitres = fetch_CURSEUR(CURSEUR)
+    self.ecran_affichage_chapitre_textBrowser.setHtml(str(chapitres[3]))

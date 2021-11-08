@@ -38,20 +38,16 @@ return resultat;
 END $$
 DELIMITER ;;
 
-
 DROP FUNCTION IF EXISTS insertion_chapitre;
+
 DELIMITER $$
-CREATE FUNCTION insertion_chapitre(livre_id INT, le_numero INT, ccontenu_chapitre TEXT) RETURNS INT
+
+CREATE FUNCTION insertion_chapitre(livre_id INT, le_numero INT, contenu_chapitre TEXT) RETURNS INT
 DETERMINISTIC CONTAINS SQL
-
 BEGIN
+INSERT INTO chapitres_livres (id_livre, numero, contenue)  values(livre_id, le_numero, contenu_chapitre);
 
-INSERT id_livre, numero, contenue INTO chapitres_livres values(
-    livre_id, le_numero, ccontenu_chapitre
-);
+return (select id FROM chapitres_livres WHERE id_livre = livre_id
+	AND numero = le_numero AND contenue = contenu_chapitre ORDER BY id desc);
 
-return (select id FROM chapitres_livres WHERE id_livre = livre_id 
-    AND numero = le_numero
-    AND contenue = ccontenu_chapitre
-    ORDER BY id desc;
 END $$

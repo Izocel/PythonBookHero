@@ -61,29 +61,30 @@ class ECRAN_USAGER(QDialog):
 
     def fetch_livre(self, usager_id:int) -> 0:
         livres_user = liste_livre_usager(usager_id)
-
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
 
         _translate = QtCore.QCoreApplication.translate
-
+        ecran_chapitre = parent.findChild(QDialog, 'EcranChapitres')
+        ecran_chapitre.field_selection_chapitre(1)
         i = 0
         for livre in livres_user:
             nomLivre = livre[1]
             auteurLivre = livre[2]
             if(i >0):
                 sizePolicy.setHeightForWidth(self.livrespushButton.sizePolicy().hasHeightForWidth())
-            self.livrespushButton = QtWidgets.QPushButton(self.sectionHaut_groupBox)
-            self.livrespushButton.setSizePolicy(sizePolicy)
-            self.livrespushButton.setAutoFillBackground(False)
-            self.livrespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-            self.livrespushButton.setStyleSheet(":active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
-            "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
-            self.LivreshorizontalLayout.addWidget(self.livrespushButton)
-            self.livrespushButton.setText(_translate("EcranUsager",
-            f"{nomLivre} \n {auteurLivre}"))
-            i+=1
+                self.livrespushButton = QtWidgets.QPushButton(self.sectionHaut_groupBox)
+                self.livrespushButton.setSizePolicy(sizePolicy)
+                self.livrespushButton.setAutoFillBackground(False)
+                self.livrespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                self.livrespushButton.setStyleSheet(":active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
+                "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
+                self.LivreshorizontalLayout.addWidget(self.livrespushButton)
+                self.livrespushButton.setText(_translate("EcranUsager",
+                f"{nomLivre} \n {auteurLivre}"))
+                i+=1
+
 
 
     def fetch_saves(self, usager_id:int) -> 0:
@@ -236,20 +237,43 @@ class ECRAN_CHAPITRE(QDialog):
         #self.connectionbtn.clicked.connect(lambda:self.connect_actionbtn())
         pass
 
-    def field_selection_chapitre(self):
-        index = 0
+    def field_selection_chapitre(self, id_livre:int):
 
-        self.selection_chapitre_comboBox.addItem("")
-        self.selection_chapitre_comboBox.setItemText(index, "Sélectionnez un chapitre")
-        index +=1
-
-        self.selection_chapitre_comboBox.addItem("")
-        self.selection_chapitre_comboBox.setItemText(index, "Nous somme désolés, aucune données disponible")
+        dict_chapitre = lister_chapitre(id_livre)
 
 
-        chapitres = lister_chapitre()
-        if(len(chapitres) > 0):
-            for champs in chapitres:
-                self.selection_chapitre_comboBox.addItem("")
-                self.selection_chapitre_comboBox.setItemText(index, "chapitre " + str(champs[2]))
-                index +=1
+        if(len(dict_chapitre) > 0):
+            index = 0
+
+            for chapitre in dict_chapitre:
+
+                if(len(chapitre) > 0):
+                    
+                    if(index == 0):
+                        self.selection_chapitre_comboBox_2.addItem("")
+                        self.selection_chapitre_comboBox_2.setItemText(index, "Sélectionnez un chapitre")
+                        
+                        index +=1
+                    
+                    elif (index == 1):
+                        self.selection_chapitre_comboBox_2.addItem("")
+                        self.selection_chapitre_comboBox_2.setItemText(index, "Introduction-Règlements")
+                        index +=1
+
+                    else:
+                        numero_chapitre = str(chapitre[2]-2)
+                        self.selection_chapitre_comboBox_2.addItem("")
+                        self.selection_chapitre_comboBox_2.setItemText(index, "Chapitre " + numero_chapitre)
+                        index +=1
+                        
+                else:
+                    self.selection_chapitre_comboBox_2.addItem("")
+                    self.selection_chapitre_comboBox_2.setItemText(index, "Nous somme désolés, aucune données disponible")
+        
+        self.selection_chapitre_comboBox_2.currentIndexChanged.connect(self.selectionchange)
+    
+    def selectionchange(self):
+        for count in range(self.selection_chapitre_comboBox_2.count()):
+            self.selection_chapitre_comboBox_2.itemText(count)  
+        
+        field_fenetre_chapitre(self)

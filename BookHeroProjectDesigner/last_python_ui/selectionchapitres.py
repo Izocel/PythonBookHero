@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_EcranChapitres(object):
     def setupUi(self, EcranChapitres):
         EcranChapitres.setObjectName("EcranChapitres")
-        EcranChapitres.resize(1174, 872)
+        EcranChapitres.resize(1054, 858)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
