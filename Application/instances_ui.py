@@ -117,18 +117,18 @@ class ECRAN_ACCEUIL(QDialog):
             
         return logged_in
 
-    def get_bd_credentials(self) -> Dict[str]:
+    def get_bd_credentials(self):
 
         conn_fields = {}
         conn_fields['host'] = 'localhost'
         conn_fields['port'] = '3306'
         conn_fields['user'] = 'root' #TODO: Faire un user juste pour cette BD
-        conn_fields['password'] = '@mysqlroot2022'  #getpass("Entrer le mot de passe mysql: \n ==> ")
+        conn_fields['password'] = 'mysql'  #getpass("Entrer le mot de passe mysql: \n ==> ")
 
         return conn_fields
 
 
-    def get_usager_credentials(self) -> Dict[str]:
+    def get_usager_credentials(self):
 
         conn_fields = {}
         conn_fields['courriel'] = self.courriel_lineEdit.text()
@@ -181,7 +181,7 @@ class ECRAN_CHAPITRE(QDialog):
         loadUi(ui_path, self)
 
     def setup_logics(self, w_parent):
-        #self.field_selection_chapitre() <-- ## Migrer vers une autre appel ou changer son setup_logics() de place...
+        #self.field_selection_chapitre() ## Migrer vers une autre appel ou changer son setup_logics() de place...
         #self.connectionbtn.clicked.connect(lambda:self.connect_actionbtn())
         pass
 

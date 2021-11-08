@@ -30,14 +30,12 @@ ecran_usager.setup_logics(s_widgets)
 ecran_chapitre = ECRAN_CHAPITRE()
 ecran_chapitre.setup_logics(s_widgets)
 
-
-
-# Ajput des widgets 'layers'
 # Ajput des widgets 'layers'
 s_widgets.setGeometry(loginGeo)
 s_widgets.addWidget(ecran_acceuil)
-s_widgets.addWidget(ecran_usager)
 s_widgets.addWidget(ecran_chapitre)
+s_widgets.addWidget(ecran_usager)
+
 s_widgets.show()
 
 sys.exit(App.exec_())
