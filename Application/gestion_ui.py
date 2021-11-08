@@ -156,11 +156,23 @@ def inserer_chapitres_livres() -> None:
         CURSEUR.execute(func)
         fetch_CURSEUR(CURSEUR)
 
+        fichier_chapitre = open(f"{path}/Livres/Livre2/Introduction.html", "rt", encoding='utf8')
+        txt = fichier_chapitre.read()
+        func = f"SELECT insertion_chapitre(2, 0,{txt})"
+        CURSEUR.execute(func)
+        fetch_CURSEUR(CURSEUR)
+
         i = 1
         for j in range(5):
             fichier_chapitre = open(f"{path}/Livres/Livre1/Chapitre0{i}.html", "rt", encoding='utf8')
             txt = fichier_chapitre.read()
             func = f"SELECT insertion_chapitre(1, {i},{txt})"
+            CURSEUR.execute(func)
+            fetch_CURSEUR(CURSEUR)
+
+            fichier_chapitre = open(f"{path}/Livres/Livre2/Chapitre0{i}.html", "rt", encoding='utf8')
+            txt = fichier_chapitre.read()
+            func = f"SELECT insertion_chapitre(2, {i},{txt})"
             CURSEUR.execute(func)
             fetch_CURSEUR(CURSEUR)
             i+= 1
@@ -175,10 +187,10 @@ def inserer_livres() -> None:
 
     if(len(data) == 0):
         data = [
-            ['Les Maître des Ténèbres', 'esbf123456789', 'Joe Dever'],
-            ['Les Maître des Ténèbres II', 'e234dfg877789', 'Joe Dever'],
-            ['Les Maître des Ténèbres III', '11d4dkvl67789', 'Joe Dever'],
-            ['Les Maître des Ténèbres IV', 'edkfws09ki54789', 'Joe Dever']
+            ['Les Maître Des Ténèbres', 'esbf123456789', 'Joe Dever et Gary Chalk'],
+            ['Les Maître Des Ténèbres II', 'e234dfg877789', 'Joe Dever et Gary Chalk'],
+            ['Les Maître Des Ténèbres III', '11d4dkvl67789', 'Joe Dever et Gary Chalk'],
+            ['Les Maître Des Ténèbres IV', 'edkfws09ki54789', 'Joe Dever et Gary Chalk']
         ]
         champs = ['titre', 'isbn', 'auteur']
 
@@ -211,10 +223,11 @@ def liste_livre_usager(usager_id:int) -> List[List]:
 def lister_sauvegardes_usager(usager_id:int) -> List[List]:
     global CURSEUR
 
-    q = "SELECT date_partie, page, numero, titre FROM sauvegardes_parties "
+    q = "SELECT id_chapitre, numero, page, date_partie, titre FROM sauvegardes_parties "
     q += "INNER JOIN chapitres_livres ON id_chapitre = chapitres_livres.id "
     q += "INNER JOIN livres ON chapitres_livres.id_livre = livres.id "
-    q += f"WHERE id_usager = {usager_id};"
+    q += f"WHERE id_usager = {usager_id} "
+    q += "ORDER BY date_partie DESC;"
 
     CURSEUR.execute(q)
     return fetch_CURSEUR(CURSEUR)
