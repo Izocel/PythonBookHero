@@ -1,5 +1,4 @@
 use python_book_hero;
-# Non-testé RVÐ
 
 DROP FUNCTION IF EXISTS acheter_livre_usager;
 DELIMITER $$
