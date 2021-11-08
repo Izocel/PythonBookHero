@@ -238,7 +238,7 @@ def attribuer_livre_par_default() -> int:
 
     livres_q = select_data_querry('livres')
     CURSEUR.execute(livres_q)
-    lepremierlivredanslistedelatable = fetch_CURSEUR(CURSEUR)[0]
+    lepremierlivredanslistedelatable = fetch_CURSEUR(CURSEUR)[0][0]
 
     resultat = 0
     for user in users:
