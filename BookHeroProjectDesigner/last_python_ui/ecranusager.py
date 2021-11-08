@@ -55,7 +55,7 @@ class Ui_EcranUsager(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.sectionHaut_groupBox.sizePolicy().hasHeightForWidth())
         self.sectionHaut_groupBox.setSizePolicy(sizePolicy)
-        self.sectionHaut_groupBox.setStyleSheet("boder: none;")
+        self.sectionHaut_groupBox.setStyleSheet("")
         self.sectionHaut_groupBox.setTitle("")
         self.sectionHaut_groupBox.setAlignment(QtCore.Qt.AlignCenter)
         self.sectionHaut_groupBox.setFlat(False)
@@ -155,9 +155,8 @@ class Ui_EcranUsager(object):
         self.deconnectionpushButton.setFont(font)
         self.deconnectionpushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.deconnectionpushButton.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.deconnectionpushButton.setStyleSheet("border-radius:20px;\n"
-"background-color: rgb(200, 200, 200);\n"
-"")
+        self.deconnectionpushButton.setStyleSheet(":!active ,:active{border: 1px; border-radius:20px; background-color: rgb(240, 110, 100);}\n"
+":hover{background-color: rgb(210, 50, 50);}")
         self.deconnectionpushButton.setObjectName("deconnectionpushButton")
         self.horizontalLayout_4.addWidget(self.deconnectionpushButton)
         self.verticalLayout_6.addWidget(self.sectionBas_groupBox)
