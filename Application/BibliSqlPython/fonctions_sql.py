@@ -1,17 +1,10 @@
+import os
+import sys
 from typing import *
-from mysql import connector as _mysqlConnector # Alias
+from mysql.connector.connection import  *
 from getpass import getpass
 import hashlib
 from datetime import datetime
-import os
-import sys
-
-def __init__(self):
-    pass
-
-# Mysql Connection class
-__MySqlConnType = _mysqlConnector.connection.MySQLConnection
-
 
 # Variables globales
 BD_CONNECTION = {}
@@ -45,7 +38,7 @@ def disconnect_from_mysql() -> bool:
 
 
 ####-####-####-#### MySQL App Connection ####-####-####-#### 
-def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:int = 5) -> __MySqlConnType:
+def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:int = 5) -> CursorBase:
 
     global BD_CONNECTION
     global BD_CONFIG
@@ -56,7 +49,7 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
     max_retry = min(max_retry, 15)
 
     for x in range(max_retry):
-        while( type(BD_CONNECTION) is not __MySqlConnType ):
+        if( type(BD_CONNECTION) is not MySQLConnection ):
             
             BD_CONFIG = {
                 'host' : config_input['host'],
@@ -65,10 +58,10 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
                 'database' : '',
                 'autocommit': autocommit
             }
-
-            #TODO:.dontDieOnBadInfosPlz()
-            BD_CONNECTION = _mysqlConnector.connect(**BD_CONFIG)
+            BD_CONNECTION = MySQLConnection()
+            BD_CONNECTION.connect(**BD_CONFIG)
             config_warning(BD_CONNECTION)
+    
     BD_CONFIG['database'] = 'python_book_hero'
     CURSEUR = BD_CONNECTION.cursor()
     print("\n La session SQL est établie")
