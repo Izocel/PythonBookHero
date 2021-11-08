@@ -226,3 +226,27 @@ def lister_sauvegardes_usager(usager_id:int) -> List[List]:
 
     CURSEUR.execute(q)
     return fetch_CURSEUR(CURSEUR)
+
+
+# acheter_livre_usager(usager_id int, livre_id int) RETURNS TINYINT(1)
+def attribuer_livre_par_default() -> int:
+    global CURSEUR
+
+    usagers_q = select_data_querry('usagers')
+    CURSEUR.execute(usagers_q)
+    users = fetch_CURSEUR(CURSEUR)
+
+    livres_q = select_data_querry('livres')
+    CURSEUR.execute(livres_q)
+    lepremierlivredanslistedelatable = fetch_CURSEUR(CURSEUR)[0]
+
+    resultat = 0
+    for user in users:
+
+        func = f"SELECT acheter_livre_usager ({user[0]}, {lepremierlivredanslistedelatable});" 
+        CURSEUR.execute(func)
+        r = fetch_CURSEUR(CURSEUR)
+        if(r != 0 and resultat == 0):
+            resultat = 0
+
+    return resultat
