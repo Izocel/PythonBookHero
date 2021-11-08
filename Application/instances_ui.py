@@ -11,7 +11,7 @@ from screeninfo import get_monitors
 from gestion_ui import *
 
 
-# CLASSES DE DIALOGUES #######################################################
+# CLASSES DE DIALOGUES #################################################
 
 for m in get_monitors():
     x= int(m.x)
@@ -113,11 +113,12 @@ class ECRAN_ACCEUIL(QDialog):
             mysql_app_insert_user()
             inserer_livres()
             inserer_chapitres_livres()
+            attribuer_livre_par_default()
             
             
         return logged_in
 
-    def get_bd_credentials(self) -> Dict[str]:
+    def get_bd_credentials(self):
 
         conn_fields = {}
         conn_fields['host'] = 'localhost'
@@ -127,8 +128,7 @@ class ECRAN_ACCEUIL(QDialog):
 
         return conn_fields
 
-
-    def get_usager_credentials(self) -> Dict[str]:
+    def get_usager_credentials(self):
 
         conn_fields = {}
         conn_fields['courriel'] = self.courriel_lineEdit.text()
