@@ -215,3 +215,4 @@ class Ui_EcranAcceuil(object):
         self.motdepasse_lineEdit.setText(_translate("EcranAcceuil", "qwerty123"))
         self.connectionpushButton.setText(_translate("EcranAcceuil", "Connection"))
         self.label_mauvaise_infos.setText(_translate("EcranAcceuil", "* Oups, cette combinaison n\'à pu être retrouvée."))
+)
