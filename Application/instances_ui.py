@@ -1,34 +1,42 @@
 import os
-from typing import Concatenate
+
+# PyQt5 Base #
 from PyQt5 import *
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QSettings
 
+# Primary monitor infos #
 from screeninfo import get_monitors
-
-# Workspace Related #
-from gestion_ui import *
-
-
-# CLASSES DE DIALOGUES #################################################
-
 for m in get_monitors():
     x= int(m.x)
     y = int(m.y)
     w= int(m.width)
     h = int(m.height)
-
     w33 = int(w/3)
     h75 = int(h/1.5)
-
     if(m.is_primary):
         windowsGeo = QtCore.QRect(m.x, m.y+25, w, h-30)
         loginGeo = QtCore.QRect(m.x, m.y+25, w33, h75)
 
+#ref: https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt
+def clearLayout(layout):
+    while layout.count():
+        child = layout.takeAt(0)
+        if child.widget():
+            child.widget().deleteLater()
 
 
-#### ECRAN_USAGER ##############################################
+# Workspace Related #
+from gestion_ui import *
+
+
+
+
+############################################ CLASSES DE DIALOGUES ############################################
+
+############################## ECRAN_USAGER ##############################
 # Extension de la classe provenant du designer (ecranusager.ui)
 # Proprietées connu sur ECRAN_USAGER
     # ?
@@ -68,6 +76,9 @@ class ECRAN_USAGER(QDialog):
 
         _translate = QtCore.QCoreApplication.translate
 
+        layout = self.LivreshorizontalLayout
+        clearLayout(layout)
+
         i = 0
         for livre in livres_user:
             nomLivre = livre[1]
@@ -78,14 +89,14 @@ class ECRAN_USAGER(QDialog):
             self.livrespushButton.setSizePolicy(sizePolicy)
             self.livrespushButton.setAutoFillBackground(False)
             self.livrespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-            self.livrespushButton.setStyleSheet(":active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
+            self.livrespushButton.setStyleSheet(":active, :!active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
             self.LivreshorizontalLayout.addWidget(self.livrespushButton)
             self.livrespushButton.setText(_translate("EcranUsager",
             f"{nomLivre} \n {auteurLivre}"))
             i+=1
-
-
+    
+    
     def fetch_saves(self, usager_id:int) -> None:
         saves = lister_sauvegardes_usager(usager_id)
 
@@ -95,11 +106,22 @@ class ECRAN_USAGER(QDialog):
 
         _translate = QtCore.QCoreApplication.translate
 
+        layout = self.SavesverticalLayout
+        clearLayout(layout)
+
         i = 0
-        for i in range(6):
-            now = datetime.now()
-            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-            saveString = f"Le fake save #{i} {dt_string}"
+        for save in saves:
+            
+            dt_string = save[3].strftime("%c")
+            titre = save[4].title()
+            num_chapitre = save[1]
+
+            if(num_chapitre == 0):
+                num_chapitre = 'Introduction'
+            else:
+                num_chapitre = "Ch."+str(num_chapitre)
+
+            saveString = f"-{i+1} {titre} |{num_chapitre}| {dt_string}"
             # TODO:
             #fonction backend qui renvoi le string d'affichage des saves params(usager_id, str_separator)
             if(i >0):
@@ -108,11 +130,12 @@ class ECRAN_USAGER(QDialog):
             self.savespushButton.setSizePolicy(sizePolicy)
             self.savespushButton.setAutoFillBackground(False)
             self.savespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-            self.savespushButton.setStyleSheet(":active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
+            self.savespushButton.setStyleSheet(":active, :!active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
             self.SavesverticalLayout.addWidget(self.savespushButton)
             self.savespushButton.setText(_translate("EcranUsager",
             f"{saveString}"))
+            i+= 1
 
 
 #### ECRAN_ACCEUIL ##############################################
