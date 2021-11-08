@@ -88,7 +88,7 @@ background: qlineargradient(spread:pad, x1:0.091, y1:0.101636, x2:0.991379, y2:0
             </sizepolicy>
            </property>
            <property name="styleSheet">
-            <string notr="true">boder: none;</string>
+            <string notr="true"/>
            </property>
            <property name="title">
             <string/>
@@ -271,9 +271,8 @@ color: #fff;</string>
                <enum>Qt::NoFocus</enum>
               </property>
               <property name="styleSheet">
-               <string notr="true">border-radius:20px;
-background-color: rgb(200, 200, 200);
-</string>
+               <string notr="true">:!active ,:active{border: 1px; border-radius:20px; background-color: rgb(240, 110, 100);}
+:hover{background-color: rgb(210, 50, 50);}</string>
               </property>
               <property name="text">
                <string>déconnection</string>
