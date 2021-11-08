@@ -165,9 +165,12 @@ class Ui_EcranAcceuil(object):
         font.setPointSize(20)
         self.connectionpushButton.setFont(font)
         self.connectionpushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.connectionpushButton.setStyleSheet("border-radius:20px;\n"
+        self.connectionpushButton.setStyleSheet(":active{border-radius:20px;\n"
 "background-color: rgb(170, 255, 255);\n"
-"")
+"}\n"
+":hover{\n"
+"background-color: rgb(23, 250, 250);\n"
+"}")
         self.connectionpushButton.setObjectName("connectionpushButton")
         self.verticalLayout_2.addWidget(self.connectionpushButton)
         spacerItem2 = QtWidgets.QSpacerItem(80, 80, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)

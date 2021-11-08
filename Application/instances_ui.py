@@ -11,7 +11,7 @@ from screeninfo import get_monitors
 from gestion_ui import *
 
 
-# CLASSES DE DIALOGUES #######################################################
+# CLASSES DE DIALOGUES #################################################
 
 for m in get_monitors():
     x= int(m.x)
@@ -59,10 +59,60 @@ class ECRAN_USAGER(QDialog):
         parent.setCurrentIndex(parent.currentIndex()-1)
         parent.setGeometry(loginGeo)
 
-    def fetch_data_ecran(self, usager_id:int) -> 0:
-        livres = liste_livre_usager(usager_id)
+    def fetch_livre(self, usager_id:int) -> 0:
+        livres_user = liste_livre_usager(usager_id)
+
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+
+        _translate = QtCore.QCoreApplication.translate
+
+        i = 0
+        for livre in livres_user:
+            nomLivre = livre[1]
+            auteurLivre = livre[2]
+            if(i >0):
+                sizePolicy.setHeightForWidth(self.livrespushButton.sizePolicy().hasHeightForWidth())
+            self.livrespushButton = QtWidgets.QPushButton(self.sectionHaut_groupBox)
+            self.livrespushButton.setSizePolicy(sizePolicy)
+            self.livrespushButton.setAutoFillBackground(False)
+            self.livrespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+            self.livrespushButton.setStyleSheet(":active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
+            "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
+            self.LivreshorizontalLayout.addWidget(self.livrespushButton)
+            self.livrespushButton.setText(_translate("EcranUsager",
+            f"{nomLivre} \n {auteurLivre}"))
+            i+=1
+
+
+    def fetch_saves(self, usager_id:int) -> 0:
         saves = lister_sauvegardes_usager(usager_id)
-        bob = 4
+
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+
+        _translate = QtCore.QCoreApplication.translate
+
+        i = 0
+        for i in range(6):
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            saveString = f"Le fake save #{i} {dt_string}"
+            # TODO:
+            #fonction backend qui renvoi le string d'affichage des saves params(usager_id, str_separator)
+            if(i >0):
+                sizePolicy.setHeightForWidth(self.savespushButton.sizePolicy().hasHeightForWidth())
+            self.savespushButton = QtWidgets.QPushButton(self.sectionHaut_groupBox)
+            self.savespushButton.setSizePolicy(sizePolicy)
+            self.savespushButton.setAutoFillBackground(False)
+            self.savespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+            self.savespushButton.setStyleSheet(":active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
+            "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
+            self.SavesverticalLayout.addWidget(self.savespushButton)
+            self.savespushButton.setText(_translate("EcranUsager",
+            f"{saveString}"))
 
 
 #### ECRAN_ACCEUIL ##############################################
@@ -113,6 +163,7 @@ class ECRAN_ACCEUIL(QDialog):
             mysql_app_insert_user()
             inserer_livres()
             inserer_chapitres_livres()
+            attribuer_livre_par_default()
             
             
         return logged_in
@@ -126,7 +177,6 @@ class ECRAN_ACCEUIL(QDialog):
         conn_fields['password'] = 'mysql'  #getpass("Entrer le mot de passe mysql: \n ==> ")
 
         return conn_fields
-
 
     def get_usager_credentials(self):
 
@@ -151,7 +201,8 @@ class ECRAN_ACCEUIL(QDialog):
                 user_id = acces_usager_promu[0]
 
                 ecran_usager = parent.findChild(QDialog, 'EcranUsager')
-                ecran_usager.fetch_data_ecran(user_id)
+                ecran_usager.fetch_livre(user_id)
+                ecran_usager.fetch_saves(user_id)
 
                 self.label_mauvaise_infos.hide()
                 self.connectionpushButton.disconnect()
