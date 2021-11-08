@@ -2,7 +2,7 @@
 from BibliSqlPython.fonctions_sql import *
 
 
-def verif_connection_usager(**user_credentials):
+def verif_connection_usager(**user_credentials) -> bool:
 
     if 'courriel' in user_credentials:
         courriel = user_credentials['courriel']
@@ -23,14 +23,12 @@ def verif_connection_usager(**user_credentials):
 
     return False
 
-def mysql_app_insert_user():
+def mysql_app_insert_user() -> None:
     global BASETABLE
     global CURSEUR
     BASETABLE = 'usagers'
 
-    querry_usagers = select_data_querry(BASETABLE)
-    CURSEUR.execute(querry_usagers)
-    usagers = fetch_CURSEUR(CURSEUR)
+    usagers = list_data(BASETABLE)
 
     if(len(usagers) == 0):
 
@@ -51,7 +49,7 @@ def mysql_app_insert_user():
         CURSEUR.reset()
 
 
-def mysql_app_create_tables():
+def mysql_app_create_tables() -> None:
     global CURSEUR
     BD = get_config('database')
 
@@ -124,7 +122,7 @@ def mysql_app_create_tables():
     CURSEUR.reset()
 
 
-def mysql_app_connection(config_input:dict = {}, autocommit:bool = False):
+def mysql_app_connection(config_input:dict = {}, autocommit:bool = False) -> object:
 
     global CURSEUR
     CURSEUR = connect_to_mysql(config_input, autocommit)
@@ -139,54 +137,48 @@ def mysql_app_disconnection():
 def list_data(table):
     querry = select_data_querry(table)
     CURSEUR.execute(querry)
-    list = fetch_CURSEUR(CURSEUR, True)
+    list = fetch_CURSEUR(CURSEUR, False)
     return list
 
-def inserer_chapitres_livres():
+def inserer_chapitres_livres() -> None:
     global CURSEUR
     global BASETABLE
-    BASETABLE = 'chapitres_livres'
 
-    querry = select_data_querry(BASETABLE)
-    CURSEUR.execute(querry)
-    data = fetch_CURSEUR(CURSEUR)
+    deja_present = list_data('chapitres_livres')
 
-    if(len(data) == 0):
+    if( len(deja_present) == 0 ):
+
+        path =  os.path.dirname(os.path.abspath(__file__))
+
+        fichier_chapitre = open(f"{path}/Livres/Livre1/Introduction.html", "rt", encoding='utf8')
+        txt = fichier_chapitre.read()
+        func = f"SELECT insertion_chapitre(1, 0,{txt})"
+        CURSEUR.execute(func)
+        fetch_CURSEUR(CURSEUR)
+
+        i = 1
+        for j in range(5):
+            fichier_chapitre = open(f"{path}/Livres/Livre1/Chapitre0{i}.html", "rt", encoding='utf8')
+            txt = fichier_chapitre.read()
+            func = f"SELECT insertion_chapitre(1, {i},{txt})"
+            CURSEUR.execute(func)
+            fetch_CURSEUR(CURSEUR)
+            i+= 1
 
 
-        # Une fonction est présente au niveau back-end pour insérer des chapitre ;)
-        # Il faudra l'utiliser ici !
-        data = [
-            [1, 1, "aaaaaaaaaaa"],
-            [1, 2, 'bbbbbbbbbbbbbbb'],
-            [1, 3, 'cccccccccccccc'],
-            [1, 4, 'ddddddddddddddd'],
-            [1, 5, 'eeeeeeeeeeeeeee'],
-            [1, 6, 'ffffffffffffffff'],
-            [1, 7, 'ggggggggggggggggggg'],
-            [1, 8, 'hhhhhhhhhhhhhhhhhh'],
-            [1, 9, 'iiiiiiiiiiiiiiiiiii'],
-            [1, 10, 'jjjjjjjjjjjjjjjjjj'] 
-        ]
-        champs = ['id_livre', 'numero', 'contenue']
-
-        builder = insertion_querry(BASETABLE, data, champs) 
-        CURSEUR.executemany(builder['sql'], builder['val'])
-        CURSEUR.reset()
-
-def inserer_livres():
+def inserer_livres() -> None:
     global CURSEUR
     global BASETABLE
     BASETABLE = 'livres'
 
-    querry = select_data_querry(BASETABLE)
-    CURSEUR.execute(querry)
-    data = fetch_CURSEUR(CURSEUR)
+    data = list_data(BASETABLE)
 
     if(len(data) == 0):
         data = [
             ['Les Maître des Ténèbres', 'esbf123456789', 'Joe Dever'],
-            ['Les Maître des Ténèbres II', 'e234dkvl67789', 'Joe Dever']
+            ['Les Maître des Ténèbres II', 'e234dfg877789', 'Joe Dever'],
+            ['Les Maître des Ténèbres III', '11d4dkvl67789', 'Joe Dever'],
+            ['Les Maître des Ténèbres IV', 'edkfws09ki54789', 'Joe Dever']
         ]
         champs = ['titre', 'isbn', 'auteur']
 
@@ -230,15 +222,9 @@ def lister_sauvegardes_usager(usager_id:int) -> List[List]:
 
 # acheter_livre_usager(usager_id int, livre_id int) RETURNS TINYINT(1)
 def attribuer_livre_par_default() -> int:
-    global CURSEUR
 
-    usagers_q = select_data_querry('usagers')
-    CURSEUR.execute(usagers_q)
-    users = fetch_CURSEUR(CURSEUR)
-
-    livres_q = select_data_querry('livres')
-    CURSEUR.execute(livres_q)
-    lepremierlivredanslistedelatable = fetch_CURSEUR(CURSEUR)[0][0]
+    users = list_data('usagers')
+    lepremierlivredanslistedelatable = list_data('livres')[0][0]
 
     resultat = 0
     for user in users:

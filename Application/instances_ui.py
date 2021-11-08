@@ -59,7 +59,7 @@ class ECRAN_USAGER(QDialog):
         parent.setCurrentIndex(parent.currentIndex()-1)
         parent.setGeometry(loginGeo)
 
-    def fetch_livre(self, usager_id:int) -> 0:
+    def fetch_livre(self, usager_id:int) -> None:
         livres_user = liste_livre_usager(usager_id)
 
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -86,7 +86,7 @@ class ECRAN_USAGER(QDialog):
             i+=1
 
 
-    def fetch_saves(self, usager_id:int) -> 0:
+    def fetch_saves(self, usager_id:int) -> None:
         saves = lister_sauvegardes_usager(usager_id)
 
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -174,7 +174,7 @@ class ECRAN_ACCEUIL(QDialog):
         conn_fields['host'] = 'localhost'
         conn_fields['port'] = '3306'
         conn_fields['user'] = 'root' #TODO: Faire un user juste pour cette BD
-        conn_fields['password'] = 'mysql'  #getpass("Entrer le mot de passe mysql: \n ==> ")
+        conn_fields['password'] = '@mysqlroot2022'  #getpass("Entrer le mot de passe mysql: \n ==> ")
 
         return conn_fields
 
@@ -186,7 +186,7 @@ class ECRAN_ACCEUIL(QDialog):
 
         return conn_fields
 
-    def connection_usagers_btnaction(self) -> 0:
+    def connection_usagers_btnaction(self) -> None:
         global logged_in
 
         if(not logged_in):

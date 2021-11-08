@@ -1,5 +1,4 @@
 use python_book_hero;
-# Non-testé RVÐ
 
 DROP FUNCTION IF EXISTS acheter_livre_usager;
 DELIMITER $$
@@ -41,17 +40,17 @@ DELIMITER ;;
 
 DROP FUNCTION IF EXISTS insertion_chapitre;
 DELIMITER $$
-CREATE FUNCTION insertion_chapitre(livre_id INT, le_numero INT, ccontenu_chapitre TEXT) RETURNS INT
+CREATE FUNCTION insertion_chapitre(livre_id INT, le_numero INT, contenu_chapitre TEXT) RETURNS INT
 DETERMINISTIC CONTAINS SQL
 
 BEGIN
 
-INSERT id_livre, numero, contenue INTO chapitres_livres values(
-    livre_id, le_numero, ccontenu_chapitre
+INSERT INTO chapitres_livres (id_livre, numero, contenue)  values(
+    livre_id, le_numero, contenu_chapitre
 );
 
 return (select id FROM chapitres_livres WHERE id_livre = livre_id 
     AND numero = le_numero
-    AND contenue = ccontenu_chapitre
-    ORDER BY id desc;
+    AND contenue = contenu_chapitre
+    ORDER BY id desc);
 END $$
