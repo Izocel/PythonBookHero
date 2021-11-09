@@ -129,18 +129,17 @@ class ECRAN_USAGER(QDialog):
 
         _translate = QtCore.QCoreApplication.translate
 
-        # Déplacer vers un action BTN #####################################################
-        ecran_chapitre:ECRAN_CHAPITRE = self.parent.findChild(QDialog, 'EcranChapitres')       #
-        ecran_chapitre.field_selection_chapitre(1)                                        #
-        # Déplacer vers un action BTN #####################################################
-
-        layout = self.LivreshorizontalLayout
+        layout:QtWidgets.QHBoxLayout = self.LivreshorizontalLayout
         clearLayout(layout)
+
+        ecran_chapitre:ECRAN_CHAPITRE = self.parent.findChild(QDialog, 'EcranChapitres')
 
         i = 0
         for livre in livres_user:
+            id_livre = livre[0]
             nomLivre = livre[1]
             auteurLivre = livre[2]
+
             if(i >0):
                 sizePolicy.setHeightForWidth(self.livrespushButton.sizePolicy().hasHeightForWidth())
             self.livrespushButton = QtWidgets.QPushButton(self.sectionHaut_groupBox)
@@ -149,9 +148,11 @@ class ECRAN_USAGER(QDialog):
             self.livrespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
             self.livrespushButton.setStyleSheet(":active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
-            self.LivreshorizontalLayout.addWidget(self.livrespushButton)
-            self.livrespushButton.setText(_translate("EcranUsager",
-            f"{nomLivre} \n {auteurLivre}"))
+            self.livrespushButton.setText(_translate("EcranUsager", f"{nomLivre} \n {auteurLivre}"))
+            
+            self.livrespushButton.clicked.connect(lambda:ecran_chapitre.field_selection_chapitre(id_livre))
+            layout.addWidget(self.livrespushButton)
+           
             i+=1
 
     def refresh_ui(self):
@@ -196,8 +197,7 @@ class ECRAN_USAGER(QDialog):
             self.savespushButton.setStyleSheet(":active, :!active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
             layout.addWidget(self.savespushButton)
-            self.savespushButton.setText(_translate("EcranUsager",
-            f"{saveString}"))
+            self.savespushButton.setText(_translate("EcranUsager", f"{saveString}"))
             i+= 1
 
 
@@ -314,10 +314,13 @@ class ECRAN_CHAPITRE(QDialog):
         loadUi(ui_path, self)
 
     def setup_logics(self, w_parent:MyStackedWidget):
+        self.parent = w_parent
         #self.field_selection_chapitre() ## Migrer vers une autre appel ou changer son setup_logics() de place...
         pass
 
     def field_selection_chapitre(self, id_livre:int):
+
+        self.parent.switchTo(self.objectName())
 
         dict_chapitre = lister_chapitre(id_livre)
 
