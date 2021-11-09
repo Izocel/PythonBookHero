@@ -53,8 +53,9 @@ ecran_chapitre.setup_logics(s_widgets)
 # Ajout des widgets 'layers'
 s_widgets.setGeometry(loginGeo)
 s_widgets.addWidget(ecran_acceuil)
-s_widgets.addWidget(ecran_usager)
 s_widgets.addWidget(ecran_chapitre)
+s_widgets.addWidget(ecran_usager)
+
 
 s_widgets.show()
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'e:\OneDrive - Cégep de Victoriaville\TransfertSchool\2021-2022\BD-2\PythonBookHero\Application\Bibli_ui\ecranacceuil.ui'
+# Form implementation generated from reading ui file 'e:\OneDrive - Cégep de Victoriaville\TransfertSchool\2021-2022\BD-2\PythonBookHero\BookHeroProjectDesigner\ecranacceuil.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.5
 #
@@ -47,7 +47,7 @@ class Ui_EcranAcceuil(object):
         self.groupBox.setSizePolicy(sizePolicy)
         self.groupBox.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.groupBox.setAutoFillBackground(False)
-        self.groupBox.setStyleSheet("border-width: 0px; border-style: solid;")
+        self.groupBox.setStyleSheet("border-style: none;")
         self.groupBox.setAlignment(QtCore.Qt.AlignJustify|QtCore.Qt.AlignVCenter)
         self.groupBox.setFlat(True)
         self.groupBox.setObjectName("groupBox")
@@ -116,7 +116,7 @@ class Ui_EcranAcceuil(object):
         font.setPointSize(18)
         self.courriel_lineEdit.setFont(font)
         self.courriel_lineEdit.setStyleSheet("color: black;\n"
-"background-color:rgba(255,255,255);\n"
+"background-color:rgb(255,255,255);\n"
 "border-width: 1px; border-style: solid")
         self.courriel_lineEdit.setObjectName("courriel_lineEdit")
         self.verticalLayout_2.addWidget(self.courriel_lineEdit)
@@ -149,7 +149,7 @@ class Ui_EcranAcceuil(object):
         font.setWeight(50)
         self.motdepasse_lineEdit.setFont(font)
         self.motdepasse_lineEdit.setStyleSheet("color: black;\n"
-"background-color:rgba(255,255,255);\n"
+"background-color:rgb(255,255,255);\n"
 "border-width: 1px; border-style: solid")
         self.motdepasse_lineEdit.setObjectName("motdepasse_lineEdit")
         self.verticalLayout_2.addWidget(self.motdepasse_lineEdit)
@@ -165,7 +165,7 @@ class Ui_EcranAcceuil(object):
         font.setPointSize(20)
         self.connectionpushButton.setFont(font)
         self.connectionpushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.connectionpushButton.setStyleSheet(":active{border-radius:20px;\n"
+        self.connectionpushButton.setStyleSheet(":!active ,:active{border-radius:20px;\n"
 "background-color: rgb(170, 255, 255);\n"
 "}\n"
 ":hover{\n"

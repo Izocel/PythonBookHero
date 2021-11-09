@@ -263,39 +263,45 @@ class ECRAN_CHAPITRE(QDialog):
 
         dict_chapitre = lister_chapitre(id_livre)
 
+        self.selection_chapitre_comboBox_2.addItem("")
+        self.selection_chapitre_comboBox_2.setItemText(0, "Sélectionnez un chapitre")
+        self.selection_chapitre_comboBox_2.currentIndexChanged.connect(self.selectionchange)
 
         if(len(dict_chapitre) > 0):
-            index = 0
 
+            index = 0
             for chapitre in dict_chapitre:
 
+                index += 1
                 if(len(chapitre) > 0):
                     
-                    if(index == 0):
-                        self.selection_chapitre_comboBox_2.addItem("")
-                        self.selection_chapitre_comboBox_2.setItemText(index, "Sélectionnez un chapitre")
-                        
-                        index +=1
-                    
-                    elif (index == 1):
+
+                    if (index == 1):
                         self.selection_chapitre_comboBox_2.addItem("")
                         self.selection_chapitre_comboBox_2.setItemText(index, "Introduction-Règlements")
-                        index +=1
 
                     else:
                         numero_chapitre = str(chapitre[2])
                         self.selection_chapitre_comboBox_2.addItem("")
                         self.selection_chapitre_comboBox_2.setItemText(index, "Chapitre " + numero_chapitre)
-                        index +=1
                         
                 else:
                     self.selection_chapitre_comboBox_2.addItem("")
                     self.selection_chapitre_comboBox_2.setItemText(index, "Nous somme désolés, aucune données disponible")
         
-        self.selection_chapitre_comboBox_2.currentIndexChanged.connect(self.selectionchange)
     
     def selectionchange(self):
-        for count in range(self.selection_chapitre_comboBox_2.count()):
-            self.selection_chapitre_comboBox_2.itemText(count)  
-        
-        field_fenetre_chapitre(self)
+        _translate = QtCore.QCoreApplication.translate
+        index = self.selection_chapitre_comboBox_2.currentIndex()
+        index -=1
+        if(index >= 0):
+            chapitre = field_fenetre_chapitre(index)
+            contenue = chapitre[0][3]
+
+            # //// AFFICHAGE ////
+            txt_browser = self.ecran_affichage_chapitre_textBrowser
+            txt_browser.setHtml(_translate("EcranChapitres", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+            "p, li { white-space: pre-wrap; }\n"
+            "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:24pt; font-weight:400; font-style:normal;\">\n"
+            f"{contenue}</body></html>"))
