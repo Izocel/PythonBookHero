@@ -1,4 +1,5 @@
 # Workspace related
+from mysql.connector import cursor
 from BibliSqlPython.fonctions_sql import *
 
 
@@ -122,19 +123,19 @@ def mysql_app_create_tables() -> None:
     CURSEUR.reset()
 
 
-def mysql_app_connection(config_input:dict = {}, autocommit:bool = False) -> object:
+def mysql_app_connection(config_input:dict = {}, autocommit:bool = False) -> cursor:
 
     global CURSEUR
     CURSEUR = connect_to_mysql(config_input, autocommit)
     return CURSEUR
 
-def mysql_app_disconnection():
+def mysql_app_disconnection() -> bool:
     global CURSEUR
     CURSEUR.reset()
     CURSEUR = {}
     return disconnect_from_mysql()
 
-def list_data(table):
+def list_data(table) -> List[List[Any]]:
     querry = select_data_querry(table)
     CURSEUR.execute(querry)
     list = fetch_CURSEUR(CURSEUR, False)

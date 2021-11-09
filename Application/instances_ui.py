@@ -222,9 +222,7 @@ class ECRAN_ACCEUIL(QDialog):
             acces_usager_promu = verif_connection_usager(**user_cred)
 
             if(acces_usager_promu):
-
                 user_id = acces_usager_promu[0]
-
                 ecran_usager = parent.findChild(QDialog, 'EcranUsager')
                 ecran_usager.fetch_livre(user_id)
                 ecran_usager.fetch_saves(user_id)
@@ -285,7 +283,7 @@ class ECRAN_CHAPITRE(QDialog):
                         index +=1
 
                     else:
-                        numero_chapitre = str(chapitre[2]-2)
+                        numero_chapitre = str(chapitre[2])
                         self.selection_chapitre_comboBox_2.addItem("")
                         self.selection_chapitre_comboBox_2.setItemText(index, "Chapitre " + numero_chapitre)
                         index +=1

@@ -61,7 +61,6 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
             BD_CONNECTION = MySQLConnection()
             BD_CONNECTION.connect(**BD_CONFIG)
             config_warning(BD_CONNECTION)
-    
     BD_CONFIG['database'] = 'python_book_hero'
     CURSEUR = BD_CONNECTION.cursor()
     print("\n La session SQL est établie")
