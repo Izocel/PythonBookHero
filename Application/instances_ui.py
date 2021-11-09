@@ -17,8 +17,8 @@ for m in get_monitors():
     w33 = int(w/3)
     h75 = int(h/1.5)
     if(m.is_primary):
-        windowsGeo = QtCore.QRect(m.x, m.y+25, w, h-30)
-        loginGeo = QtCore.QRect(m.x, m.y+25, w33, h75)
+        windowsGeo = QtCore.QRect(m.x, m.y, w, h)
+        loginGeo = QtCore.QRect(m.x, m.y, w33, h75)
 
 #ref: https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt
 def clearLayout(layout):
@@ -36,36 +36,90 @@ from gestion_ui import *
 
 ############################################ CLASSES DE DIALOGUES ############################################
 
+############################## MyStackedWidget ##############################
+# Extension de la classe provenant de QStackedWidget
+# Proprietées connu sur MyStackedWidget
+    # connected_id
+    # ?
+    # ?
+#
+class MyStackedWidget(QStackedWidget):
+    
+
+    connected_id:int = 0
+    logged_in:bool = False
+
+    def get_connected_id(self) -> int:
+        return self.connected_id
+    def set_connected_id(self, id:int) -> None:
+        self.connected_id = id
+
+
+    def get_logged_in(self) -> bool:
+        return self.logged_in
+    def set_logged_in(self, state:bool) -> None:
+        self.logged_in = state
+    
+
+    def __init__(self):
+        super(MyStackedWidget, self).__init__()
+        self.settings = QSettings('MOMO-RVÐ', 'Python Book Hero')
+
+        try:
+            self.resize(self.settings.value('window size'))
+            self.move(self.settings.value('window position'))
+            self.setCurrentIndex(self.settings.value('last index'))
+        except:
+            print("An exception occurred")
+        finally:
+            pass
+    
+    def closeEvent(self,a0: QtGui.QCloseEvent) -> None:
+        self.settings.setValue('window size', self.size())
+        self.settings.setValue('window position', self.pos())
+        self.settings.setValue('last index', self.currentIndex())
+
+        return super().closeEvent(a0)
+
+    def switchTo(self,child_name:str, child_class:QDialog = QDialog)-> int:
+        child = self.findChild(child_class, child_name)
+        index:int = self.indexOf(child)
+        try:
+            self.setCurrentIndex(index)
+        except:
+            print("Unable to find that child")
+            return -1
+        return index
+
+
+
 ############################## ECRAN_USAGER ##############################
 # Extension de la classe provenant du designer (ecranusager.ui)
 # Proprietées connu sur ECRAN_USAGER
-    # ?
+    # deconnectionpushButton
     # ?
     # ?
 #
 class ECRAN_USAGER(QDialog):
 
-    parent = {}
+    parent:MyStackedWidget
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(ECRAN_USAGER, self).__init__()
         ui_path =  os.path.dirname(os.path.abspath(__file__))
         ui_path += '\\Bibli_ui\\ecranusager.ui'
         loadUi(ui_path, self)
 
-    def setup_logics(self, w_parent):
-        global parent
-        parent = w_parent
+    def setup_logics(self, w_parent:MyStackedWidget) -> None:
+        self.parent = w_parent
         self.deconnectionpushButton.clicked.connect(lambda:self.deconnection_usagers_btnaction())
 
-
     def deconnection_usagers_btnaction(self):
-        global parent
-        ecran_acceuil = parent.findChild(QDialog, 'EcranAcceuil')
+        ecran_acceuil:ECRAN_ACCEUIL = self.parent.findChild(QDialog, 'EcranAcceuil')
         ecran_acceuil.app_disconnect()
-        ecran_acceuil.setup_logics(parent)
-        parent.setCurrentIndex(parent.currentIndex()-1)
-        parent.setGeometry(loginGeo)
+        ecran_acceuil.setup_logics(self.parent)
+        self.parent.switchTo('EcranAcceuil')
+        self.parent.showNormal()
 
     def fetch_livre(self, usager_id:int) -> None:
         livres_user = liste_livre_usager(usager_id)
@@ -74,8 +128,11 @@ class ECRAN_USAGER(QDialog):
         sizePolicy.setVerticalStretch(0)
 
         _translate = QtCore.QCoreApplication.translate
-        ecran_chapitre = parent.findChild(QDialog, 'EcranChapitres')
-        ecran_chapitre.field_selection_chapitre(1)
+
+        # Déplacer vers un action BTN #####################################################
+        ecran_chapitre:ECRAN_CHAPITRE = self.parent.findChild(QDialog, 'EcranChapitres')       #
+        ecran_chapitre.field_selection_chapitre(1)                                        #
+        # Déplacer vers un action BTN #####################################################
 
         layout = self.LivreshorizontalLayout
         clearLayout(layout)
@@ -97,7 +154,11 @@ class ECRAN_USAGER(QDialog):
             f"{nomLivre} \n {auteurLivre}"))
             i+=1
 
-
+    def refresh_ui(self):
+        if(self.parent.get_logged_in()):
+            user_id:int = self.parent.get_connected_id()
+            self.fetch_livre(user_id)
+            self.fetch_saves(user_id)
 
     def fetch_saves(self, usager_id:int) -> 0:
         saves = lister_sauvegardes_usager(usager_id)
@@ -108,7 +169,7 @@ class ECRAN_USAGER(QDialog):
 
         _translate = QtCore.QCoreApplication.translate
 
-        layout = self.SavesverticalLayout
+        layout:QtWidgets.QVBoxLayout = self.SavesverticalLayout
         clearLayout(layout)
 
         i = 0
@@ -134,7 +195,7 @@ class ECRAN_USAGER(QDialog):
             self.savespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
             self.savespushButton.setStyleSheet(":active, :!active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
-            self.SavesverticalLayout.addWidget(self.savespushButton)
+            layout.addWidget(self.savespushButton)
             self.savespushButton.setText(_translate("EcranUsager",
             f"{saveString}"))
             i+= 1
@@ -146,11 +207,11 @@ class ECRAN_USAGER(QDialog):
     # connectionpushButton (btn)
     # motdepasse_lineEdit (input)
     # courriel_lineEdit (input)
+    # label_mauvaise_infos (label)
 #
 class ECRAN_ACCEUIL(QDialog):
 
-    parent = {}
-    logged_in = False
+    parent:MyStackedWidget
 
     def __init__(self):
         super(ECRAN_ACCEUIL, self).__init__()
@@ -158,40 +219,36 @@ class ECRAN_ACCEUIL(QDialog):
         ui_path += '\\Bibli_ui\\ecranacceuil.ui'
         loadUi(ui_path, self)
 
-        global logged_in
-        logged_in = False
-
-    def setup_logics(self, w_parent):
-        global logged_in
-        global parent
-        parent = w_parent
+    def setup_logics(self, w_parent:MyStackedWidget):
+        self.parent = w_parent
         self.label_mauvaise_infos.hide()
         self.connectionpushButton.clicked.connect(lambda:self.connection_usagers_btnaction())
 
     
     def app_disconnect(self):
-        global logged_in
-        if(logged_in):
-            logged_in = not mysql_app_disconnection()
-            
-        return logged_in
+        connected = self.parent.get_logged_in()
+        
+        if(connected):
+            connected = not mysql_app_disconnection()
+
+        if( not connected ):
+            self.parent.set_logged_in(False)
+            self.parent.set_connected_id(0)
+
+        return connected
         
     def app_connect(self):
-        global logged_in
 
-        bd_config = ECRAN_ACCEUIL.get_bd_credentials(self)
+        bd_config = self.get_bd_credentials()
 
         if(mysql_app_connection(bd_config, True)):
+            self.parent.set_logged_in(True)
 
-            logged_in = True
             mysql_app_create_tables()
             mysql_app_insert_user()
             inserer_livres()
             inserer_chapitres_livres()
             attribuer_livre_par_default()
-            
-            
-        return logged_in
 
     def get_bd_credentials(self):
 
@@ -212,28 +269,28 @@ class ECRAN_ACCEUIL(QDialog):
         return conn_fields
 
     def connection_usagers_btnaction(self) -> None:
-        global logged_in
+        connected = self.parent.get_logged_in()
 
-        if(not logged_in):
-            logged_in = self.app_connect()
+        if(not connected):
+            self.app_connect()
+            connected = self.parent.get_logged_in()
 
-        if(logged_in):
+        if(connected):
             user_cred = self.get_usager_credentials()
             acces_usager_promu = verif_connection_usager(**user_cred)
 
             if(acces_usager_promu):
-                user_id = acces_usager_promu[0]
-                ecran_usager = parent.findChild(QDialog, 'EcranUsager')
-                ecran_usager.fetch_livre(user_id)
-                ecran_usager.fetch_saves(user_id)
+                user_id:int = acces_usager_promu[0]
+                self.parent.set_connected_id(user_id)
+                ecran_usager:ECRAN_USAGER = self.parent.findChild(QDialog, 'EcranUsager')
+                ecran_usager.refresh_ui()
 
                 self.label_mauvaise_infos.hide()
                 self.connectionpushButton.disconnect()
 
                 ######### CHANGER DE PAGE  ############
-                parent.setCurrentIndex(parent.currentIndex()+1)
-                parent.setGeometry(windowsGeo)
-                parent.showMaximized()
+                self.parent.switchTo('EcranUsager')
+                self.parent.showMaximized()
 
             else: # Ajouter un message à l'écran de mauvaise infos....
                 self.app_disconnect()
@@ -242,11 +299,13 @@ class ECRAN_ACCEUIL(QDialog):
 #### ECRAN_CHAPITRE ##############################################
 # Extension de la classe provenant du designer (ecranchapitre.ui)
 # Proprietées connu sur ECRAN_CHAPITRE
-    # ?
-    # ?
+    # selection_chapitre_comboBox_2
+    # ecran_affichage_chapitre_textBrowser
     # ?
 #
 class ECRAN_CHAPITRE(QDialog):
+
+    parent:MyStackedWidget
 
     def __init__(self):
         super(ECRAN_CHAPITRE, self).__init__()
@@ -254,9 +313,8 @@ class ECRAN_CHAPITRE(QDialog):
         ui_path += '\\Bibli_ui\\selectionchapitres.ui'
         loadUi(ui_path, self)
 
-    def setup_logics(self, w_parent):
+    def setup_logics(self, w_parent:MyStackedWidget):
         #self.field_selection_chapitre() ## Migrer vers une autre appel ou changer son setup_logics() de place...
-        #self.connectionbtn.clicked.connect(lambda:self.connect_actionbtn())
         pass
 
     def field_selection_chapitre(self, id_livre:int):
@@ -299,9 +357,9 @@ class ECRAN_CHAPITRE(QDialog):
             contenue = chapitre[0][3]
 
             # //// AFFICHAGE ////
-            txt_browser = self.ecran_affichage_chapitre_textBrowser
+            txt_browser:QtWidgets.QTextBrowser = self.ecran_affichage_chapitre_textBrowser
             txt_browser.setHtml(_translate("EcranChapitres", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
             "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
             "p, li { white-space: pre-wrap; }\n"
-            "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:24pt; font-weight:400; font-style:normal;\">\n"
+            "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:36pt; font-weight:400; font-style:normal;\">\n"
             f"{contenue}</body></html>"))
