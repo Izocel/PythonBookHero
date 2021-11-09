@@ -4,4 +4,6 @@
 setting.json
 .qt_for_python*
 
-rvd_personnel*
+.qt_for_python/uic/ecranacceuil.py
+.qt_for_python/uic/ecranusager.py
+.qt_for_python/uic/selectionchapitres.py

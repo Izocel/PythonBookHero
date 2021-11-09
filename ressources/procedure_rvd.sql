@@ -1,0 +1,28 @@
+use python_book_hero;
+
+
+DROP PROCEDURE IF EXISTS 
+DELIMITER //
+CREATE PROCEDURE 
+BEGIN
+
+       
+        
+END //
+#test
+
+
+DROP PROCEDURE IF EXISTS ;
+DELIMITER //
+CREATE PROCEDURE 
+BEGIN
+
+
+
+END //
+#test
+
+
+
+
+
