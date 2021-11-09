@@ -1,3 +1,9 @@
 .history*
-__pycache__
+**/__pycache__
 *.pyc
+setting.json
+.qt_for_python*
+
+.qt_for_python/uic/ecranacceuil.py
+.qt_for_python/uic/ecranusager.py
+.qt_for_python/uic/selectionchapitres.py
