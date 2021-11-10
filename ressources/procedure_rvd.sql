@@ -20,8 +20,10 @@ END //
 
 DROP PROCEDURE IF EXISTS insert_sauvegarde;
 DELIMITER //
-CREATE PROCEDURE insert_sauvegarde(IN usager_id INT, IN livre_id INT, chapitre_id INT)
+CREATE PROCEDURE insert_sauvegarde(IN usager_id INT, IN livre_id INT, chapitre_id INT, INOUT out_save_id INT)
 BEGIN
   INSERT INTO sauvegardes_parties (id_usager, id_livre, id_chapitre)
     VALUES (usager_id, livre_id, chapitre_id);
+
+     SET out_save_id = (SELECT id FROM sauvegardes_parties ORDER BY date_partie DESC);
 END //
