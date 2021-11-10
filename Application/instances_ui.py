@@ -159,8 +159,11 @@ class ECRAN_USAGER(QDialog):
 
             self.livrespushButton.id_livre = id_livre
             self.livrespushButton.num_chapitre = 0
+            self.livrespushButton.id_chapitre = lister_premier_chapitre(id_livre)[0][0]
+            self.livrespushButton.usager_id = usager_id
             self.livrespushButton.setSizePolicy(sizePolicy)
             self.livrespushButton.setText(_translate("EcranUsager", f"{nomLivre} \n {auteurLivre}"))
+            self.livrespushButton.setObjectName('livrespushButton')
 
             if(i >0):
                 sizePolicy.setHeightForWidth(self.livrespushButton.sizePolicy().hasHeightForWidth())
@@ -185,11 +188,12 @@ class ECRAN_USAGER(QDialog):
 
         i = 0
         for save in saves:
-            
-            saveString = save[3].strftime("%c")
-            titre = save[4].title()
+            id_chapitre = save[0]
+            save_id = save[6]
             num_chapitre = save[1]
             id_livre = save[5]
+            saveString = save[3].strftime("%c")
+            titre = save[4].title()
             if(num_chapitre == 0):
                 txt_chapitre = 'Introduction'
             else:
@@ -203,9 +207,13 @@ class ECRAN_USAGER(QDialog):
             self.savespushButton.setStyleSheet(":active, :!active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
             self.savespushButton.id_livre = id_livre
+            self.savespushButton.id_chapitre = id_chapitre
             self.savespushButton.num_chapitre = num_chapitre
+            self.savespushButton.usager_id = usager_id
+            self.savespushButton.save_id = save_id
             self.savespushButton.setText(_translate("EcranUsager", f"{saveString}"))
-            
+            self.savespushButton.setObjectName('savespushButton')
+
             if(i >0):
                 sizePolicy.setHeightForWidth(self.savespushButton.sizePolicy().hasHeightForWidth())
             self.savespushButton.setSizePolicy(sizePolicy)
@@ -357,7 +365,17 @@ class ECRAN_CHAPITRE(QDialog):
 
         sender = self.sender()
         id_livre = sender.id_livre
-        num_save_chapitre = sender.num_chapitre
+        id_usager = sender.usager_id
+        id_chapitre = sender.id_chapitre
+        num_chapitre = sender.num_chapitre
+        save_id = -1
+
+        if(sender.objectName() == 'savespushButton'):
+            save_id = sender.save_id
+        elif(sender.objectName() == 'livrespushButton'):
+            save_id = insert_sauvegarde_parties(id_usager, id_livre, id_chapitre, save_id)
+        
+        
 
         chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
         chapitres_comboBox.clear()
@@ -393,8 +411,8 @@ class ECRAN_CHAPITRE(QDialog):
                     chapitres_comboBox.addItem("")
                     chapitres_comboBox.setItemText(index, "Nous somme désolés, aucune données disponible")
 
-            if(num_save_chapitre >= 0 ):
-                chapitres_comboBox.setCurrentIndex(num_save_chapitre+1)
+            if(num_chapitre >= 0 ):
+                chapitres_comboBox.setCurrentIndex(num_chapitre+1)
             else:
                 chapitres_comboBox.setCurrentIndex(1)
 
