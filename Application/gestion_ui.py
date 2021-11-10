@@ -203,7 +203,7 @@ def lister_chapitre(livre:int = 1):
     global CURSEUR
     global BASETABLE
     BASETABLE = 'chapitres_livres'
-    select_chapitres = select_data_querry(BASETABLE, "*", "", "ORDER BY numero")
+    select_chapitres = select_data_querry(BASETABLE, "*", f"WHERE id_livre = {livre}", "ORDER BY numero")
     CURSEUR.execute(select_chapitres)
     chapitres = fetch_CURSEUR(CURSEUR)
 
@@ -258,3 +258,23 @@ def field_fenetre_chapitre(index:int) -> List[List[Any]]:
     querry = select_data_querry(BASETABLE, "*", f"WHERE numero = {index}", "ORDER BY numero")
     CURSEUR.execute(querry)
     return fetch_CURSEUR(CURSEUR)
+
+
+
+def insert_sauvegarde_parties(id_user:int, id_livre:int, id_chapitre:int) -> None:
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'sauvegardes_parties'
+    procedure:str = 'insert_sauvegarde'
+
+    args = ( (id_user, 'INT'), (id_livre, 'INT'), (id_chapitre, 'INT'))
+    CURSEUR.callproc(procedure, args)
+
+def update_sauvegarde_parties(id_save:int, id_user:int, id_livre:int, id_chapitre:int) -> None:
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'sauvegardes_parties'
+    procedure:str = 'update_sauvegarde'
+
+    args = ( (id_save, 'INT'), (id_user, 'INT'), (id_livre, 'INT'), (id_chapitre, 'INT'))
+    CURSEUR.callproc(procedure, args)

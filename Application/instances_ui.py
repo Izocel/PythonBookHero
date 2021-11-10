@@ -159,7 +159,6 @@ class ECRAN_USAGER(QDialog):
 
             self.livrespushButton.id_livre = id_livre
             self.livrespushButton.num_chapitre = 0
-            self.livrespushButton.setObjectName(f"livrespushButton_{i}")
             self.livrespushButton.setSizePolicy(sizePolicy)
             self.livrespushButton.setText(_translate("EcranUsager", f"{nomLivre} \n {auteurLivre}"))
 
@@ -205,7 +204,6 @@ class ECRAN_USAGER(QDialog):
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
             self.savespushButton.id_livre = id_livre
             self.savespushButton.num_chapitre = num_chapitre
-            self.savespushButton.setObjectName(f"savepushButton_{i}")
             self.savespushButton.setText(_translate("EcranUsager", f"{saveString}"))
             
             if(i >0):
@@ -263,6 +261,7 @@ class ECRAN_ACCEUIL(QDialog):
             inserer_livres()
             inserer_chapitres_livres()
             attribuer_livre_par_default()
+            #insert_fake_save()
 
     def get_bd_credentials(self):
 
@@ -359,9 +358,6 @@ class ECRAN_CHAPITRE(QDialog):
         sender = self.sender()
         id_livre = sender.id_livre
         num_save_chapitre = sender.num_chapitre
-
-        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
-        chapitres_comboBox.clear()
 
         chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
         chapitres_comboBox.clear()
