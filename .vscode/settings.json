@@ -12,4 +12,7 @@
         "__pycache__": false
     },
     "explorerExclude.backup": null,
+    "files.associations": {
+        "*.yaml": "home-assistant"
+    },
 }

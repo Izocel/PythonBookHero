@@ -224,7 +224,7 @@ def liste_livre_usager(usager_id:int) -> List[List]:
 def lister_sauvegardes_usager(usager_id:int) -> List[List]:
     global CURSEUR
 
-    q = "SELECT id_chapitre, numero, page, date_partie, titre FROM sauvegardes_parties "
+    q = "SELECT id_chapitre, numero, page, date_partie, titre, livres.id FROM sauvegardes_parties "
     q += "INNER JOIN chapitres_livres ON id_chapitre = chapitres_livres.id "
     q += "INNER JOIN livres ON chapitres_livres.id_livre = livres.id "
     q += f"WHERE id_usager = {usager_id} "

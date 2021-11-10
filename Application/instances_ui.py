@@ -40,8 +40,8 @@ from gestion_ui import *
 # Extension de la classe provenant de QStackedWidget
 # Proprietées connu sur MyStackedWidget
     # connected_id
-    # ?
-    # ?
+    # logged_in
+    # settings
 #
 class MyStackedWidget(QStackedWidget):
     
@@ -97,8 +97,11 @@ class MyStackedWidget(QStackedWidget):
 # Extension de la classe provenant du designer (ecranusager.ui)
 # Proprietées connu sur ECRAN_USAGER
     # deconnectionpushButton
-    # ?
-    # ?
+    # connectionpushButton
+    # savespushButton
+    # livrespushButton
+    # LivreshorizontalLayout
+    # SavesverticalLayout
 #
 class ECRAN_USAGER(QDialog):
 
@@ -120,6 +123,13 @@ class ECRAN_USAGER(QDialog):
         ecran_acceuil.setup_logics(self.parent)
         self.parent.switchTo('EcranAcceuil')
         self.parent.showNormal()
+
+    def refresh_ui(self):
+        if(self.parent.get_logged_in()):
+            user_id:int = self.parent.get_connected_id()
+            self.fetch_livre(user_id)
+            self.fetch_saves(user_id)
+
 
     def fetch_livre(self, usager_id:int) -> None:
         livres_user = liste_livre_usager(usager_id)
@@ -146,7 +156,7 @@ class ECRAN_USAGER(QDialog):
             self.livrespushButton.setSizePolicy(sizePolicy)
             self.livrespushButton.setAutoFillBackground(False)
             self.livrespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-            self.livrespushButton.setStyleSheet(":active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
+            self.livrespushButton.setStyleSheet(":!active, :active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
             self.livrespushButton.setText(_translate("EcranUsager", f"{nomLivre} \n {auteurLivre}"))
             
@@ -155,13 +165,7 @@ class ECRAN_USAGER(QDialog):
            
             i+=1
 
-    def refresh_ui(self):
-        if(self.parent.get_logged_in()):
-            user_id:int = self.parent.get_connected_id()
-            self.fetch_livre(user_id)
-            self.fetch_saves(user_id)
-
-    def fetch_saves(self, usager_id:int) -> 0:
+    def fetch_saves(self, usager_id:int) -> None:
         saves = lister_sauvegardes_usager(usager_id)
 
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -173,19 +177,24 @@ class ECRAN_USAGER(QDialog):
         layout:QtWidgets.QVBoxLayout = self.SavesverticalLayout
         clearLayout(layout)
 
+        ecran_chapitre:ECRAN_CHAPITRE = self.parent.findChild(QDialog, 'EcranChapitres')
+        array_for_chap_ref = []
+        array_for_id_livre = []
+        array_btn = []
+
         i = 0
         for save in saves:
             
             dt_string = save[3].strftime("%c")
             titre = save[4].title()
             num_chapitre = save[1]
-
+            id_livre = save[5]
             if(num_chapitre == 0):
-                num_chapitre = 'Introduction'
+                txt_chapitre = 'Introduction'
             else:
-                num_chapitre = "Ch."+str(num_chapitre)
+                txt_chapitre = "Ch."+str(num_chapitre)
 
-            saveString = f"-{i+1} {titre} |{num_chapitre}| {dt_string}"
+            saveString = f"-{i+1} {titre} |{txt_chapitre}| {dt_string}"
             # TODO:
             #fonction backend qui renvoi le string d'affichage des saves params(usager_id, str_separator)
             if(i >0):
@@ -198,8 +207,11 @@ class ECRAN_USAGER(QDialog):
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
             layout.addWidget(self.savespushButton)
             self.savespushButton.setText(_translate("EcranUsager", f"{saveString}"))
+            array_for_chap_ref.append(num_chapitre)
+            array_for_id_livre.append(id_livre)
+            array_btn.append(self.savespushButton)
+            self.savespushButton.clicked.connect(lambda:ecran_chapitre.field_selection_chapitre(id_livre, num_chapitre))
             i+= 1
-
 
 #### ECRAN_ACCEUIL ##############################################
 # Extension de la classe provenant du designer (ecranacceuil.ui)
@@ -315,18 +327,45 @@ class ECRAN_CHAPITRE(QDialog):
 
     def setup_logics(self, w_parent:MyStackedWidget):
         self.parent = w_parent
-        #self.field_selection_chapitre() ## Migrer vers une autre appel ou changer son setup_logics() de place...
+        self.retour_accueil_pushButton.clicked.connect(lambda: self.call_home())
+        self.page_precedente_pushButton_2.clicked.connect(lambda: self.prev_chapitre())
+        self.page_suivante_pushButton_3.clicked.connect(lambda: self.next_chapitre())
         pass
 
-    def field_selection_chapitre(self, id_livre:int):
+    def call_home(self):
+        ecran_usager:ECRAN_USAGER = self.parent.findChild(ECRAN_USAGER, 'EcranUsager')
+        ecran_usager.refresh_ui()
+        self.parent.switchTo('EcranUsager')
+
+    def next_chapitre(self):
+        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
+        max = chapitres_comboBox.count()-1
+        nextIndex = chapitres_comboBox.currentIndex()+1
+
+        if(nextIndex <= max):
+            chapitres_comboBox.setCurrentIndex(nextIndex)
+
+    def prev_chapitre(self):
+        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
+        prevIndex = chapitres_comboBox.currentIndex()-1
+
+        if(prevIndex >= 1):
+            chapitres_comboBox.setCurrentIndex(prevIndex)
+
+    def field_selection_chapitre(self, id_livre:int, num_save_chapitre = None):
+
+        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
+        chapitres_comboBox.clear()
 
         self.parent.switchTo(self.objectName())
+        self.page_precedente_pushButton_2.hide()
 
         dict_chapitre = lister_chapitre(id_livre)
-
-        self.selection_chapitre_comboBox_2.addItem("")
-        self.selection_chapitre_comboBox_2.setItemText(0, "Sélectionnez un chapitre")
-        self.selection_chapitre_comboBox_2.currentIndexChanged.connect(self.selectionchange)
+        
+      
+        chapitres_comboBox.addItem("")
+        chapitres_comboBox.setItemText(0, "Sélectionnez un chapitre")
+        chapitres_comboBox.currentIndexChanged.connect(lambda:self.selectionchange())
 
         if(len(dict_chapitre) > 0):
 
@@ -335,26 +374,55 @@ class ECRAN_CHAPITRE(QDialog):
 
                 index += 1
                 if(len(chapitre) > 0):
-                    
 
                     if (index == 1):
-                        self.selection_chapitre_comboBox_2.addItem("")
-                        self.selection_chapitre_comboBox_2.setItemText(index, "Introduction-Règlements")
+                        chapitres_comboBox.addItem("")
+                        chapitres_comboBox.setItemText(index, "Introduction-Règlements")
 
                     else:
                         numero_chapitre = str(chapitre[2])
-                        self.selection_chapitre_comboBox_2.addItem("")
-                        self.selection_chapitre_comboBox_2.setItemText(index, "Chapitre " + numero_chapitre)
+                        chapitres_comboBox.addItem("")
+                        chapitres_comboBox.setItemText(index, "Chapitre " + numero_chapitre)
                         
                 else:
-                    self.selection_chapitre_comboBox_2.addItem("")
-                    self.selection_chapitre_comboBox_2.setItemText(index, "Nous somme désolés, aucune données disponible")
-        
-    
+                    chapitres_comboBox.addItem("")
+                    chapitres_comboBox.setItemText(index, "Nous somme désolés, aucune données disponible")
+
+            chapitres_comboBox.setCurrentIndex(1)
+            if(num_save_chapitre):
+                chapitres_comboBox.setCurrentIndex(num_save_chapitre)
+
+    def check_next_prev_btn(self) -> int:
+
+        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
+        maxindex = chapitres_comboBox.count()-1
+        prevBtn:QtWidgets.QPushButton = self.page_precedente_pushButton_2
+        nextBtn:QtWidgets.QPushButton = self.page_suivante_pushButton_3
+
+        if(chapitres_comboBox.currentIndex() <= 1):
+            prevBtn.hide()
+        else:
+            prevBtn.show()
+
+        if(chapitres_comboBox.currentIndex() == maxindex):
+            nextBtn.hide()   
+        else:
+             nextBtn.show()
+            
+        return maxindex +1
+
+
     def selectionchange(self):
+        
+        self.check_next_prev_btn()
+
         _translate = QtCore.QCoreApplication.translate
         index = self.selection_chapitre_comboBox_2.currentIndex()
         index -=1
+            
+        txt_default:str = "Veuillez selectionner un chapitre..."
+
+
         if(index >= 0):
             chapitre = field_fenetre_chapitre(index)
             contenue = chapitre[0][3]
@@ -366,3 +434,10 @@ class ECRAN_CHAPITRE(QDialog):
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:36pt; font-weight:400; font-style:normal;\">\n"
             f"{contenue}</body></html>"))
+        else:
+            txt_browser:QtWidgets.QTextBrowser = self.ecran_affichage_chapitre_textBrowser
+            txt_browser.setHtml(_translate("EcranChapitres", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+            "p, li { white-space: pre-wrap; }\n"
+            "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:36pt; font-weight:400; font-style:normal;\">\n"
+            f"{txt_default}</body></html>"))
