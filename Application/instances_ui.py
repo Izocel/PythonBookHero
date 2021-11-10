@@ -133,16 +133,16 @@ class ECRAN_USAGER(QDialog):
 
     def fetch_livre(self, usager_id:int) -> None:
         livres_user = liste_livre_usager(usager_id)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-
-        _translate = QtCore.QCoreApplication.translate
 
         layout:QtWidgets.QHBoxLayout = self.LivreshorizontalLayout
         clearLayout(layout)
 
         ecran_chapitre:ECRAN_CHAPITRE = self.parent.findChild(QDialog, 'EcranChapitres')
+        _translate = QtCore.QCoreApplication.translate
+
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
 
         i = 0
         for livre in livres_user:
@@ -150,42 +150,44 @@ class ECRAN_USAGER(QDialog):
             nomLivre = livre[1]
             auteurLivre = livre[2]
 
-            if(i >0):
-                sizePolicy.setHeightForWidth(self.livrespushButton.sizePolicy().hasHeightForWidth())
             self.livrespushButton = QtWidgets.QPushButton(self.sectionHaut_groupBox)
-            self.livrespushButton.setSizePolicy(sizePolicy)
             self.livrespushButton.setAutoFillBackground(False)
             self.livrespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+            self.livrespushButton.clicked.connect(ecran_chapitre.field_selection_chapitre)
             self.livrespushButton.setStyleSheet(":!active, :active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
+
+            self.livrespushButton.id_livre = id_livre
+            self.livrespushButton.num_chapitre = 0
+            self.livrespushButton.setObjectName(f"livrespushButton_{i}")
+            self.livrespushButton.setSizePolicy(sizePolicy)
             self.livrespushButton.setText(_translate("EcranUsager", f"{nomLivre} \n {auteurLivre}"))
-            
-            self.livrespushButton.clicked.connect(lambda:ecran_chapitre.field_selection_chapitre(id_livre))
+
+            if(i >0):
+                sizePolicy.setHeightForWidth(self.livrespushButton.sizePolicy().hasHeightForWidth())
             layout.addWidget(self.livrespushButton)
-           
             i+=1
 
     def fetch_saves(self, usager_id:int) -> None:
         saves = lister_sauvegardes_usager(usager_id)
-
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-
-        _translate = QtCore.QCoreApplication.translate
-
+       
         layout:QtWidgets.QVBoxLayout = self.SavesverticalLayout
         clearLayout(layout)
 
         ecran_chapitre:ECRAN_CHAPITRE = self.parent.findChild(QDialog, 'EcranChapitres')
-        array_for_chap_ref = []
-        array_for_id_livre = []
-        array_btn = []
+
+
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        
+        _translate = QtCore.QCoreApplication.translate
+
 
         i = 0
         for save in saves:
             
-            dt_string = save[3].strftime("%c")
+            saveString = save[3].strftime("%c")
             titre = save[4].title()
             num_chapitre = save[1]
             id_livre = save[5]
@@ -194,23 +196,23 @@ class ECRAN_USAGER(QDialog):
             else:
                 txt_chapitre = "Ch."+str(num_chapitre)
 
-            saveString = f"-{i+1} {titre} |{txt_chapitre}| {dt_string}"
-            # TODO:
-            #fonction backend qui renvoi le string d'affichage des saves params(usager_id, str_separator)
-            if(i >0):
-                sizePolicy.setHeightForWidth(self.savespushButton.sizePolicy().hasHeightForWidth())
+            saveString = f"-{i+1} {titre} |{txt_chapitre}| {saveString}"
             self.savespushButton = QtWidgets.QPushButton(self.sectionHaut_groupBox)
-            self.savespushButton.setSizePolicy(sizePolicy)
             self.savespushButton.setAutoFillBackground(False)
             self.savespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+            self.savespushButton.clicked.connect(ecran_chapitre.field_selection_chapitre)
             self.savespushButton.setStyleSheet(":active, :!active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
-            layout.addWidget(self.savespushButton)
+            self.savespushButton.id_livre = id_livre
+            self.savespushButton.num_chapitre = num_chapitre
+            self.savespushButton.setObjectName(f"savepushButton_{i}")
             self.savespushButton.setText(_translate("EcranUsager", f"{saveString}"))
-            array_for_chap_ref.append(num_chapitre)
-            array_for_id_livre.append(id_livre)
-            array_btn.append(self.savespushButton)
-            self.savespushButton.clicked.connect(lambda:ecran_chapitre.field_selection_chapitre(id_livre, num_chapitre))
+            
+            if(i >0):
+                sizePolicy.setHeightForWidth(self.savespushButton.sizePolicy().hasHeightForWidth())
+            self.savespushButton.setSizePolicy(sizePolicy)
+            layout.addWidget(self.savespushButton)
+            
             i+= 1
 
 #### ECRAN_ACCEUIL ##############################################
@@ -352,7 +354,11 @@ class ECRAN_CHAPITRE(QDialog):
         if(prevIndex >= 1):
             chapitres_comboBox.setCurrentIndex(prevIndex)
 
-    def field_selection_chapitre(self, id_livre:int, num_save_chapitre = None):
+    def field_selection_chapitre(self):
+
+        sender = self.sender()
+        id_livre = sender.id_livre
+        num_save_chapitre = sender.num_chapitre
 
         chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
         chapitres_comboBox.clear()
@@ -368,7 +374,7 @@ class ECRAN_CHAPITRE(QDialog):
       
         chapitres_comboBox.addItem("")
         chapitres_comboBox.setItemText(0, "Sélectionnez un chapitre")
-        chapitres_comboBox.currentIndexChanged.connect(lambda:self.selectionchange())
+        chapitres_comboBox.currentIndexChanged.connect(self.selectionchange)
 
         if(len(dict_chapitre) > 0):
 
@@ -391,9 +397,10 @@ class ECRAN_CHAPITRE(QDialog):
                     chapitres_comboBox.addItem("")
                     chapitres_comboBox.setItemText(index, "Nous somme désolés, aucune données disponible")
 
-            chapitres_comboBox.setCurrentIndex(1)
-            if(num_save_chapitre):
-                chapitres_comboBox.setCurrentIndex(num_save_chapitre)
+            if(num_save_chapitre >= 0 ):
+                chapitres_comboBox.setCurrentIndex(num_save_chapitre+1)
+            else:
+                chapitres_comboBox.setCurrentIndex(1)
 
     def check_next_prev_btn(self) -> int:
 
