@@ -357,6 +357,9 @@ class ECRAN_CHAPITRE(QDialog):
         chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
         chapitres_comboBox.clear()
 
+        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
+        chapitres_comboBox.clear()
+
         self.parent.switchTo(self.objectName())
         self.page_precedente_pushButton_2.hide()
 
