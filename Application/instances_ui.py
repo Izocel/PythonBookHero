@@ -146,7 +146,7 @@ class ECRAN_USAGER(QDialog):
             self.livrespushButton.setSizePolicy(sizePolicy)
             self.livrespushButton.setAutoFillBackground(False)
             self.livrespushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-            self.livrespushButton.setStyleSheet(":active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
+            self.livrespushButton.setStyleSheet(":!active, :active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
             self.livrespushButton.setText(_translate("EcranUsager", f"{nomLivre} \n {auteurLivre}"))
             
@@ -315,18 +315,45 @@ class ECRAN_CHAPITRE(QDialog):
 
     def setup_logics(self, w_parent:MyStackedWidget):
         self.parent = w_parent
-        #self.field_selection_chapitre() ## Migrer vers une autre appel ou changer son setup_logics() de place...
+        self.retour_accueil_pushButton.clicked.connect(lambda: self.call_home())
+        self.page_precedente_pushButton_2.clicked.connect(lambda: self.prev_chapitre())
+        self.page_suivante_pushButton_3.clicked.connect(lambda: self.next_chapitre())
         pass
+
+    def call_home(self):
+        ecran_usager:ECRAN_USAGER = self.parent.findChild(ECRAN_USAGER, 'EcranUsager')
+        ecran_usager.refresh_ui()
+        self.parent.switchTo('EcranUsager')
+
+    def next_chapitre(self):
+        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
+        max = chapitres_comboBox.count()-1
+        nextIndex = chapitres_comboBox.currentIndex()+1
+
+        if(nextIndex <= max):
+            chapitres_comboBox.setCurrentIndex(nextIndex)
+
+    def prev_chapitre(self):
+        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
+        prevIndex = chapitres_comboBox.currentIndex()-1
+
+        if(prevIndex >= 1):
+            chapitres_comboBox.setCurrentIndex(prevIndex)
 
     def field_selection_chapitre(self, id_livre:int):
 
+        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
+        chapitres_comboBox.clear()
+
         self.parent.switchTo(self.objectName())
+        self.page_precedente_pushButton_2.hide()
 
         dict_chapitre = lister_chapitre(id_livre)
-
-        self.selection_chapitre_comboBox_2.addItem("")
-        self.selection_chapitre_comboBox_2.setItemText(0, "Sélectionnez un chapitre")
-        self.selection_chapitre_comboBox_2.currentIndexChanged.connect(self.selectionchange)
+        
+      
+        chapitres_comboBox.addItem("")
+        chapitres_comboBox.setItemText(0, "Sélectionnez un chapitre")
+        chapitres_comboBox.currentIndexChanged.connect(lambda:self.selectionchange())
 
         if(len(dict_chapitre) > 0):
 
@@ -335,26 +362,52 @@ class ECRAN_CHAPITRE(QDialog):
 
                 index += 1
                 if(len(chapitre) > 0):
-                    
 
                     if (index == 1):
-                        self.selection_chapitre_comboBox_2.addItem("")
-                        self.selection_chapitre_comboBox_2.setItemText(index, "Introduction-Règlements")
+                        chapitres_comboBox.addItem("")
+                        chapitres_comboBox.setItemText(index, "Introduction-Règlements")
 
                     else:
                         numero_chapitre = str(chapitre[2])
-                        self.selection_chapitre_comboBox_2.addItem("")
-                        self.selection_chapitre_comboBox_2.setItemText(index, "Chapitre " + numero_chapitre)
+                        chapitres_comboBox.addItem("")
+                        chapitres_comboBox.setItemText(index, "Chapitre " + numero_chapitre)
                         
                 else:
-                    self.selection_chapitre_comboBox_2.addItem("")
-                    self.selection_chapitre_comboBox_2.setItemText(index, "Nous somme désolés, aucune données disponible")
-        
-    
+                    chapitres_comboBox.addItem("")
+                    chapitres_comboBox.setItemText(index, "Nous somme désolés, aucune données disponible")
+            chapitres_comboBox.setCurrentIndex(1)
+
+    def check_next_prev_btn(self) -> int:
+
+        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
+        maxindex = chapitres_comboBox.count()-1
+        prevBtn:QtWidgets.QPushButton = self.page_precedente_pushButton_2
+        nextBtn:QtWidgets.QPushButton = self.page_suivante_pushButton_3
+
+        if(chapitres_comboBox.currentIndex() <= 1):
+            prevBtn.hide()
+        else:
+            prevBtn.show()
+
+        if(chapitres_comboBox.currentIndex() == maxindex):
+            nextBtn.hide()   
+        else:
+             nextBtn.show()
+            
+        return maxindex +1
+
+
     def selectionchange(self):
+        
+        self.check_next_prev_btn()
+
         _translate = QtCore.QCoreApplication.translate
         index = self.selection_chapitre_comboBox_2.currentIndex()
         index -=1
+            
+        txt_default:str = "Veuillez selectionner un chapitre..."
+
+
         if(index >= 0):
             chapitre = field_fenetre_chapitre(index)
             contenue = chapitre[0][3]
@@ -366,3 +419,10 @@ class ECRAN_CHAPITRE(QDialog):
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:36pt; font-weight:400; font-style:normal;\">\n"
             f"{contenue}</body></html>"))
+        else:
+            txt_browser:QtWidgets.QTextBrowser = self.ecran_affichage_chapitre_textBrowser
+            txt_browser.setHtml(_translate("EcranChapitres", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+            "p, li { white-space: pre-wrap; }\n"
+            "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:36pt; font-weight:400; font-style:normal;\">\n"
+            f"{txt_default}</body></html>"))
