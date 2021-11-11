@@ -55,7 +55,7 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
                 'host' : config_input['host'],
                 'user' : config_input['user'],
                 'password' : config_input['password'],
-                'database' : '',
+                'database' : config_input['database'],
                 'autocommit': autocommit
             }
             BD_CONNECTION = MySQLConnection()
