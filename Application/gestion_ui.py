@@ -1,5 +1,6 @@
 # Workspace related
 from mysql.connector import cursor
+from mysql.connector.abstracts import MYSQL_PY_TYPES
 from BibliSqlPython.fonctions_sql import *
 
 
@@ -123,6 +124,28 @@ def mysql_app_create_tables() -> None:
     CURSEUR.reset()
 
 
+    # TABLE FEUILLES_AVENTURE
+    sql = '''CREATE TABLE IF NOT EXISTS feuilles_aventure(
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    id_save INT NOT NULL,
+    discipline TEXT,
+    armes TEXT,
+    objets_sac TEXT,
+    repas_sac TEXT,
+    habileter TEXT,
+    endurance TEXT,
+    objets_speciaux TEXT,
+    bourse TEXT,
+    endurance_loup TEXT,
+    quotien_attaque TEXT,
+    endurance_ennemie TEXT,
+    FOREIGN KEY (id_save) REFERENCES sauvegardes_parties(id)
+    )'''
+    CURSEUR.execute(sql)
+    CURSEUR.reset()
+
+
+
 def mysql_app_connection(config_input:dict = {}, autocommit:bool = False) -> cursor:
 
     global CURSEUR
@@ -203,7 +226,18 @@ def lister_chapitre(livre:int = 1):
     global CURSEUR
     global BASETABLE
     BASETABLE = 'chapitres_livres'
-    select_chapitres = select_data_querry(BASETABLE, "*", "", "ORDER BY numero")
+    select_chapitres = select_data_querry(BASETABLE, "*", f"WHERE id_livre = {livre}", "ORDER BY numero")
+    CURSEUR.execute(select_chapitres)
+    chapitres = fetch_CURSEUR(CURSEUR)
+
+    return chapitres
+
+
+def lister_premier_chapitre(livre:int = 1):
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'chapitres_livres'
+    select_chapitres = select_data_querry(BASETABLE, "id", f"WHERE id_livre = {livre}", "ORDER BY numero", "", "LIMIT 1")
     CURSEUR.execute(select_chapitres)
     chapitres = fetch_CURSEUR(CURSEUR)
 
@@ -224,7 +258,7 @@ def liste_livre_usager(usager_id:int) -> List[List]:
 def lister_sauvegardes_usager(usager_id:int) -> List[List]:
     global CURSEUR
 
-    q = "SELECT id_chapitre, numero, page, date_partie, titre FROM sauvegardes_parties "
+    q = "SELECT id_chapitre, numero, page, date_partie, titre, livres.id, sauvegardes_parties.id FROM sauvegardes_parties "
     q += "INNER JOIN chapitres_livres ON id_chapitre = chapitres_livres.id "
     q += "INNER JOIN livres ON chapitres_livres.id_livre = livres.id "
     q += f"WHERE id_usager = {usager_id} "
@@ -235,15 +269,15 @@ def lister_sauvegardes_usager(usager_id:int) -> List[List]:
 
 
 # acheter_livre_usager(usager_id int, livre_id int) RETURNS TINYINT(1)
-def attribuer_livre_par_default() -> int:
+def attribuer_livre_par_default(odre_livre:int) -> int:
 
     users = list_data('usagers')
-    lepremierlivredanslistedelatable = list_data('livres')[0][0]
+    lelivrechoisie = list_data('livres')[odre_livre][0]
 
     resultat = 0
     for user in users:
 
-        func = f"SELECT acheter_livre_usager ({user[0]}, {lepremierlivredanslistedelatable});" 
+        func = f"SELECT acheter_livre_usager ({user[0]}, {lelivrechoisie});" 
         CURSEUR.execute(func)
         r = fetch_CURSEUR(CURSEUR)
         if(r != 0 and resultat == 0):
@@ -251,11 +285,170 @@ def attribuer_livre_par_default() -> int:
 
     return resultat
 
-def field_fenetre_chapitre(self):
+def field_fenetre_chapitre(id_livre:int, index:int) -> List[List[Any]]:
     global CURSEUR
     global BASETABLE
     BASETABLE = 'chapitres_livres'
-    querry = select_data_querry(BASETABLE, "*", "", "ORDER BY numero")
+    querry = select_data_querry(BASETABLE, "*", f"WHERE numero = {index} and id_livre = {id_livre}", "ORDER BY numero")
     CURSEUR.execute(querry)
-    chapitres = fetch_CURSEUR(CURSEUR)
-    self.ecran_affichage_chapitre_textBrowser.setHtml(str(chapitres[3]))
+    return fetch_CURSEUR(CURSEUR)
+
+def insert_sauvegarde_parties(id_user:int, id_livre:int, id_chapitre:int, out_id_save:int) -> int:
+    global CURSEUR
+    procedure:str = 'insert_sauvegarde'
+
+    args = ( id_user, id_livre, id_chapitre, out_id_save)
+    out_id_save = CURSEUR.callproc(procedure, args)[3]
+    CURSEUR.reset()
+    return out_id_save
+
+def update_sauvegarde_parties(id_save:int, id_user:int, id_livre:int, id_chapitre:int) -> None:
+    global CURSEUR
+    procedure:str = 'update_sauvegarde'
+
+    args = ( id_save, id_user, id_livre, id_chapitre)
+    CURSEUR.callproc(procedure, args)
+    CURSEUR.reset()
+
+
+def insert_sauvegarde_aventures(id_save:int, dictValeur:dict[str]) -> int:
+    global CURSEUR
+    procedure:str = 'insert_aventure'
+
+    discipline = None
+    armes = None
+    objets_sac = None
+    repas_sac = None
+    habileter = None
+    endurance = None
+    objets_speciaux = None
+    bourse = None
+    endurance_loup = None
+    quotien_attaque = None
+    endurance_ennemie = None
+
+    id_feuille_aventure = -1
+
+    for key in dictValeur:
+        if(key == 'discipline'):
+            discipline = dictValeur[key]
+        elif(key == 'armes'):
+            armes = dictValeur[key]
+        elif(key == 'objets_sac'):
+            objets_sac = dictValeur[key]
+        elif(key == 'repas_sac'):
+            repas_sac = dictValeur[key]
+        elif(key == 'habileter'):
+            habileter = dictValeur[key]
+        elif(key == 'endurance'):
+            endurance = dictValeur[key]
+        elif(key == 'objets_speciaux'):
+            objets_speciaux = dictValeur[key]
+        elif(key == 'bourse'):
+            bourse = dictValeur[key]
+        elif(key == 'endurance_loup'):
+            endurance_loup = dictValeur[key]
+        elif(key == 'quotien_attaque'):
+            quotien_attaque = dictValeur[key]
+        elif(key == 'endurance_ennemie'):
+            endurance_ennemie = dictValeur[key]
+        else:
+            # insert_sauvegarde_aventures(fetch_another)
+            print("Ça chie en sale !")
+
+    args = (
+    id_save,
+    discipline,
+    armes,
+    objets_sac,
+    repas_sac,
+    habileter,
+    endurance,
+    objets_speciaux,
+    bourse,
+    endurance_loup,
+    quotien_attaque,
+    endurance_ennemie,
+    id_feuille_aventure
+    )
+
+    retour = CURSEUR.callproc(procedure, args)[12]
+    CURSEUR.reset()
+    return retour
+
+def update_sauvegarde_aventure(id_save, dictValeur:dict[str]):
+    global CURSEUR
+    procedure:str = 'update_aventure'
+
+    discipline = None
+    armes = None
+    objets_sac = None
+    repas_sac = None
+    habileter = None
+    endurance = None
+    objets_speciaux = None
+    bourse = None
+    endurance_loup = None
+    quotien_attaque = None
+    endurance_ennemie = None
+
+    for key in dictValeur:
+        if(key == 'discipline'):
+            discipline = dictValeur[key]
+        elif(key == 'armes'):
+            armes = dictValeur[key]
+        elif(key == 'objets_sac'):
+            objets_sac = dictValeur[key]
+        elif(key == 'repas_sac'):
+            repas_sac = dictValeur[key]
+        elif(key == 'habileter'):
+            habileter = dictValeur[key]
+        elif(key == 'endurance'):
+            endurance = dictValeur[key]
+        elif(key == 'objets_speciaux'):
+            objets_speciaux = dictValeur[key]
+        elif(key == 'bourse'):
+            bourse = dictValeur[key]
+        elif(key == 'endurance_loup'):
+            endurance_loup = dictValeur[key]
+        elif(key == 'quotien_attaque'):
+            quotien_attaque = dictValeur[key]
+        elif(key == 'endurance_ennemie'):
+            endurance_ennemie = dictValeur[key]
+        else:
+            # insert_sauvegarde_aventures(fetch_another)
+            print("Ça chie en sale !")
+
+    args = (
+    id_save,
+    discipline,
+    armes,
+    objets_sac,
+    repas_sac,
+    habileter,
+    endurance,
+    objets_speciaux,
+    bourse,
+    endurance_loup,
+    quotien_attaque,
+    endurance_ennemie
+    )
+
+    CURSEUR.callproc(procedure, args)
+    CURSEUR.reset()
+
+
+def lister_feuille_usager(id_save:int) -> List[List[Any]]:
+
+    global CURSEUR
+
+    q = select_data_querry(
+        'feuilles_aventure',
+        '*',
+        f'WHERE id_save = {id_save}',
+            '','', 
+            'LIMIT 1'
+            )
+    
+    CURSEUR.execute(q)
+    return fetch_CURSEUR(CURSEUR)[0][2:]
