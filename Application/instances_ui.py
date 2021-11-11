@@ -362,9 +362,9 @@ class ECRAN_AVENTURE(QDialog):
 
         if(not self.save_id):
             self.save_id = insert_sauvegarde_aventures(self.save_id, liste_valeur) 
-        else:
-            update_sauvegarde_parties(self.save_id, self.id_user, self.id_livre, self.id_chapitre)
-            update_sauvegarde_aventure(self.save_id, liste_valeur)
+        
+        update_sauvegarde_parties(self.save_id, self.id_user, self.id_livre, self.id_chapitre)
+        update_sauvegarde_aventure(self.save_id, liste_valeur)
 
         
 
