@@ -287,7 +287,7 @@ class ECRAN_ACCEUIL(QDialog):
         conn_fields['host'] = 'localhost'
         conn_fields['port'] = '3306'
         conn_fields['user'] = 'root' #TODO: Faire un user juste pour cette BD
-        conn_fields['password'] = 'mysql'  #getpass("Entrer le mot de passe mysql: \n ==> ")
+        conn_fields['password'] = '@mysqlroot2022'  #getpass("Entrer le mot de passe mysql: \n ==> ")
 
         return conn_fields
 
@@ -351,7 +351,10 @@ class ECRAN_AVENTURE(QDialog):
 
     def setup_logics(self):
         self.save_pushButton.clicked.connect(lambda: self.save_aventure())
+        self.save_pushButton.clicked.connect(lambda: self.hide())
+        self.cancel_pushButton.clicked.connect(lambda: self.hide())
         self.cancel_pushButton.clicked.connect(lambda: self.cancel_aventure())
+
             
     def save_aventure(self):
 
@@ -363,7 +366,7 @@ class ECRAN_AVENTURE(QDialog):
             update_sauvegarde_parties(self.save_id, self.id_user, self.id_livre, self.id_chapitre)
             update_sauvegarde_aventure(self.save_id, liste_valeur)
 
-        self.hide()
+        
 
     # pour écrire == setPlainText(str)
     def fetch_all_text_area(self) -> list[str]:
@@ -388,7 +391,6 @@ class ECRAN_AVENTURE(QDialog):
         pass
 
     def cancel_aventure(self):
-        self.hide() 
         # && reload last loaded (save)
         pass
 
@@ -473,8 +475,10 @@ class ECRAN_CHAPITRE(QDialog):
         self.ecran_aventure.id_livre = id_livre
 
         chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
+        chapitres_comboBox.clear()
         self.parent.switchTo(self.objectName())
         self.page_precedente_pushButton_2.hide()
+
 
         dict_chapitre = lister_chapitre(id_livre)
       
@@ -484,6 +488,7 @@ class ECRAN_CHAPITRE(QDialog):
 
 
         if(len(dict_chapitre) > 0):
+
 
             index = 0
             for chapitre in dict_chapitre:
