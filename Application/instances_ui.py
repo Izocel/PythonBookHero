@@ -78,7 +78,19 @@ class MyStackedWidget(QStackedWidget):
         self.settings.setValue('window position', self.pos())
         self.settings.setValue('last index', self.currentIndex())
 
+        self.kill_connection()
+
         return super().closeEvent(a0)
+
+    
+    def kill_connection(self):
+
+        if(self.logged_in):
+            connected = not mysql_app_disconnection()
+
+        if( not self.logged_in ):
+            self.set_logged_in(False)
+            self.set_connected_id(0)
 
     def switchTo(self,child_name:str, child_class:QDialog = QDialog)-> int:
         child = self.findChild(child_class, child_name)
@@ -158,9 +170,11 @@ class ECRAN_USAGER(QDialog):
 
             self.livrespushButton.id_livre = id_livre
             self.livrespushButton.num_chapitre = 0
-            self.livrespushButton.setObjectName(f"livrespushButton_{i}")
+            self.livrespushButton.id_chapitre = lister_premier_chapitre(id_livre)[0][0]
+            self.livrespushButton.usager_id = usager_id
             self.livrespushButton.setSizePolicy(sizePolicy)
             self.livrespushButton.setText(_translate("EcranUsager", f"{nomLivre} \n {auteurLivre}"))
+            self.livrespushButton.setObjectName('livrespushButton')
 
             if(i >0):
                 sizePolicy.setHeightForWidth(self.livrespushButton.sizePolicy().hasHeightForWidth())
@@ -185,11 +199,12 @@ class ECRAN_USAGER(QDialog):
 
         i = 0
         for save in saves:
-            
-            saveString = save[3].strftime("%c")
-            titre = save[4].title()
+            id_chapitre = save[0]
+            save_id = save[6]
             num_chapitre = save[1]
             id_livre = save[5]
+            saveString = save[3].strftime("%c")
+            titre = save[4].title()
             if(num_chapitre == 0):
                 txt_chapitre = 'Introduction'
             else:
@@ -203,10 +218,13 @@ class ECRAN_USAGER(QDialog):
             self.savespushButton.setStyleSheet(":active, :!active{font-size:32px;border-radius:20px;\n""background-color: rgb(170, 255, 255);\n"
             "}\n"":hover{\n""background-color: rgb(23, 250, 250);\n""}")
             self.savespushButton.id_livre = id_livre
+            self.savespushButton.id_chapitre = id_chapitre
             self.savespushButton.num_chapitre = num_chapitre
-            self.savespushButton.setObjectName(f"savepushButton_{i}")
+            self.savespushButton.usager_id = usager_id
+            self.savespushButton.save_id = save_id
             self.savespushButton.setText(_translate("EcranUsager", f"{saveString}"))
-            
+            self.savespushButton.setObjectName('savespushButton')
+
             if(i >0):
                 sizePolicy.setHeightForWidth(self.savespushButton.sizePolicy().hasHeightForWidth())
             self.savespushButton.setSizePolicy(sizePolicy)
@@ -262,6 +280,7 @@ class ECRAN_ACCEUIL(QDialog):
             inserer_livres()
             inserer_chapitres_livres()
             attribuer_livre_par_default()
+            #insert_fake_save()
 
     def get_bd_credentials(self):
 
@@ -396,10 +415,17 @@ class ECRAN_CHAPITRE(QDialog):
 
         sender = self.sender()
         id_livre = sender.id_livre
-        num_save_chapitre = sender.num_chapitre
+        id_usager = sender.usager_id
+        id_chapitre = sender.id_chapitre
+        num_chapitre = sender.num_chapitre
+        save_id = -1
 
-        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
-        chapitres_comboBox.clear()
+        if(sender.objectName() == 'savespushButton'):
+            save_id = sender.save_id
+        elif(sender.objectName() == 'livrespushButton'):
+            save_id = insert_sauvegarde_parties(id_usager, id_livre, id_chapitre, save_id)
+        
+        
 
         self.parent.switchTo(self.objectName())
         self.page_precedente_pushButton_2.hide()
@@ -432,8 +458,8 @@ class ECRAN_CHAPITRE(QDialog):
                     chapitres_comboBox.addItem("")
                     chapitres_comboBox.setItemText(index, "Nous somme désolés, aucune données disponible")
 
-            if(num_save_chapitre >= 0 ):
-                chapitres_comboBox.setCurrentIndex(num_save_chapitre+1)
+            if(num_chapitre >= 0 ):
+                chapitres_comboBox.setCurrentIndex(num_chapitre+1)
             else:
                 chapitres_comboBox.setCurrentIndex(1)
 

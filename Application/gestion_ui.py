@@ -210,6 +210,17 @@ def lister_chapitre(livre:int = 1):
     return chapitres
 
 
+def lister_premier_chapitre(livre:int = 1):
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'chapitres_livres'
+    select_chapitres = select_data_querry(BASETABLE, "id", f"WHERE id_livre = {livre}", "ORDER BY numero", "", "LIMIT 1")
+    CURSEUR.execute(select_chapitres)
+    chapitres = fetch_CURSEUR(CURSEUR)
+
+    return chapitres
+
+
 def liste_livre_usager(usager_id:int) -> List[List]:
     global CURSEUR
     
@@ -224,7 +235,7 @@ def liste_livre_usager(usager_id:int) -> List[List]:
 def lister_sauvegardes_usager(usager_id:int) -> List[List]:
     global CURSEUR
 
-    q = "SELECT id_chapitre, numero, page, date_partie, titre, livres.id FROM sauvegardes_parties "
+    q = "SELECT id_chapitre, numero, page, date_partie, titre, livres.id, sauvegardes_parties.id FROM sauvegardes_parties "
     q += "INNER JOIN chapitres_livres ON id_chapitre = chapitres_livres.id "
     q += "INNER JOIN livres ON chapitres_livres.id_livre = livres.id "
     q += f"WHERE id_usager = {usager_id} "
@@ -258,3 +269,26 @@ def field_fenetre_chapitre(index:int) -> List[List[Any]]:
     querry = select_data_querry(BASETABLE, "*", f"WHERE numero = {index}", "ORDER BY numero")
     CURSEUR.execute(querry)
     return fetch_CURSEUR(CURSEUR)
+
+
+
+def insert_sauvegarde_parties(id_user:int, id_livre:int, id_chapitre:int, out_id_save:int) -> int:
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'sauvegardes_parties'
+    procedure:str = 'insert_sauvegarde'
+
+    args = ( id_user, id_livre, id_chapitre, out_id_save)
+    out_id_save = CURSEUR.callproc(procedure, args)[3]
+    CURSEUR.reset()
+    return out_id_save
+
+def update_sauvegarde_parties(id_save:int, id_user:int, id_livre:int, id_chapitre:int) -> None:
+    global CURSEUR
+    global BASETABLE
+    BASETABLE = 'sauvegardes_parties'
+    procedure:str = 'update_sauvegarde'
+
+    args = ( id_save, id_user, id_livre, id_chapitre)
+    CURSEUR.callproc(procedure, args)
+    CURSEUR.reset()
