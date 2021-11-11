@@ -79,7 +79,19 @@ class MyStackedWidget(QStackedWidget):
         self.settings.setValue('window position', self.pos())
         self.settings.setValue('last index', self.currentIndex())
 
+        self.kill_connection()
+
         return super().closeEvent(a0)
+
+    
+    def kill_connection(self):
+
+        if(self.logged_in):
+            connected = not mysql_app_disconnection()
+
+        if( not self.logged_in ):
+            self.set_logged_in(False)
+            self.set_connected_id(0)
 
     def switchTo(self,child_name:str, child_class:QDialog = QDialog)-> int:
         child = self.findChild(child_class, child_name)
