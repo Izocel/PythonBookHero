@@ -78,10 +78,9 @@ class MyStackedWidget(QStackedWidget):
         self.settings.setValue('window position', self.pos())
         self.settings.setValue('last index', self.currentIndex())
 
+
         self.kill_connection()
-
         return super().closeEvent(a0)
-
     
     def kill_connection(self):
 
@@ -204,7 +203,7 @@ class ECRAN_USAGER(QDialog):
             num_chapitre = save[1]
             id_livre = save[5]
             saveString = save[3].strftime("%c")
-            titre = save[4].title()
+            titre = save[4]
             if(num_chapitre == 0):
                 txt_chapitre = 'Introduction'
             else:
@@ -278,8 +277,8 @@ class ECRAN_ACCEUIL(QDialog):
             mysql_app_insert_user()
             inserer_livres()
             inserer_chapitres_livres()
-            attribuer_livre_par_default()
-            #insert_fake_save()
+            attribuer_livre_par_default(0)
+            attribuer_livre_par_default(1)
 
     def get_bd_credentials(self):
 
@@ -335,8 +334,8 @@ class ECRAN_ACCEUIL(QDialog):
     # ?
 #
 class ECRAN_AVENTURE(QDialog):
-    
-    parent:MyStackedWidget
+
+    parent:QtWidgets.QDialog
 
     save_id:int
     id_user:int
@@ -349,24 +348,12 @@ class ECRAN_AVENTURE(QDialog):
         ui_path += '\\Bibli_ui\\feuilleaventure.ui'
         loadUi(ui_path, self)
 
-    def setup_logics(self):
+    def setup_logics(self, w_parent:QtWidgets.QDialog):
+        self.parent:ECRAN_CHAPITRE = w_parent
         self.save_pushButton.clicked.connect(lambda: self.save_aventure())
         self.save_pushButton.clicked.connect(lambda: self.hide())
         self.cancel_pushButton.clicked.connect(lambda: self.hide())
         self.cancel_pushButton.clicked.connect(lambda: self.cancel_aventure())
-
-            
-    def save_aventure(self):
-
-        liste_valeur = self.fetch_all_text_area()
-
-        if(not self.save_id):
-            self.save_id = insert_sauvegarde_aventures(self.save_id, liste_valeur) 
-        
-        update_sauvegarde_parties(self.save_id, self.id_user, self.id_livre, self.id_chapitre)
-        update_sauvegarde_aventure(self.save_id, liste_valeur)
-
-        
 
     # pour écrire == setPlainText(str)
     def fetch_all_text_area(self) -> list[str]:
@@ -384,31 +371,59 @@ class ECRAN_AVENTURE(QDialog):
             'endurance_ennemie' : self.endurance_ennemie_textEdit.toPlainText()
         }
         return liste
+            
+    def save_aventure(self):
 
+        liste_valeur = self.fetch_all_text_area()
+
+        if(not self.save_id):
+            print("Ça chie du colisse !!")
+        
+        update_sauvegarde_parties(self.save_id, self.id_user, self.id_livre, self.id_chapitre)
+        update_sauvegarde_aventure(self.save_id, liste_valeur)
+        self.parent.page_aventure_pushButton_4.setText("Feuille Aventure")
 
     def load_aventure(self):
-
 
         if(self.save_id):
 
             # retourne seulement les champs lier aux text-areas (voir return)
             champs_feuille = lister_feuille_usager(self.save_id)
 
-            self.discipline_textEdit.setPlainText(champs_feuille[0]),
-            self.endurance_loup_textEdit.setPlainText(champs_feuille[1]),
-            self.armes_textEdit.setPlainText(champs_feuille[2]),
-            self.objets_sac_textEdit.setPlainText(champs_feuille[3]),
-            self.repas_sac_textEdit.setPlainText(champs_feuille[4]),
-            self.habileter_textEdit.setPlainText(champs_feuille[5]),
-            self.endurance_textEdit.setPlainText(champs_feuille[6]),
-            self.objetsSpeciaux_textEdit.setPlainText(champs_feuille[7]),
-            self.bourse_textEdit.setPlainText(champs_feuille[8]),
-            self.quotient_attaque_textEdit.setPlainText(champs_feuille[9]),
+            self.discipline_textEdit.setPlainText(champs_feuille[0])
+            self.armes_textEdit.setPlainText(champs_feuille[1])
+            self.objets_sac_textEdit.setPlainText(champs_feuille[2])
+            self.repas_sac_textEdit.setPlainText(champs_feuille[3])
+            self.habileter_textEdit.setPlainText(champs_feuille[4])
+            self.endurance_textEdit.setPlainText(champs_feuille[5])
+            self.objetsSpeciaux_textEdit.setPlainText(champs_feuille[6])
+            self.bourse_textEdit.setPlainText(champs_feuille[7])
+            self.endurance_loup_textEdit.setPlainText(champs_feuille[8])
+            self.quotient_attaque_textEdit.setPlainText(champs_feuille[9])
             self.endurance_ennemie_textEdit.setPlainText(champs_feuille[10])
+
+        else:
+            self.reset_aventure()
 
 
     def cancel_aventure(self):
+        self.parent.page_aventure_pushButton_4.setText("Feuille Aventure")
         self.load_aventure()
+
+
+    def reset_aventure(self):
+
+        self.discipline_textEdit.setPlainText('')
+        self.armes_textEdit.setPlainText('')
+        self.objets_sac_textEdit.setPlainText('')
+        self.repas_sac_textEdit.setPlainText('')
+        self.habileter_textEdit.setPlainText('')
+        self.endurance_textEdit.setPlainText('')
+        self.objetsSpeciaux_textEdit.setPlainText('')
+        self.bourse_textEdit.setPlainText('')
+        self.endurance_loup_textEdit.setPlainText('')
+        self.quotient_attaque_textEdit.setPlainText('')
+        self.endurance_ennemie_textEdit.setPlainText('')
         
 
 
@@ -434,24 +449,36 @@ class ECRAN_CHAPITRE(QDialog):
     def setup_logics(self, w_parent:MyStackedWidget):
         self.parent = w_parent
         self.ecran_aventure = ECRAN_AVENTURE()
-        self.ecran_aventure.setup_logics()
+        self.ecran_aventure.setup_logics(self)
+        self.page_aventure_pushButton_4.setText('Feuille Aventure')
         self.retour_accueil_pushButton.clicked.connect(lambda: self.call_home())
         self.page_precedente_pushButton_2.clicked.connect(lambda: self.prev_chapitre())
         self.page_suivante_pushButton_3.clicked.connect(lambda: self.next_chapitre())
         self.page_aventure_pushButton_4.clicked.connect(lambda: self.afficher_aventure())
         
-        
 
     def call_home(self):
+
+        self.ecran_aventure.save_aventure()
+
+        if(self.ecran_aventure.isVisible()):
+            self.ecran_aventure.hide()
+        self.page_aventure_pushButton_4.setText('Feuille Aventure')
+
+        self.ecran_aventure.save_id = None
         ecran_usager:ECRAN_USAGER = self.parent.findChild(ECRAN_USAGER, 'EcranUsager')
         ecran_usager.refresh_ui()
         self.parent.switchTo('EcranUsager')
+
 
     def afficher_aventure(self):
         if(self.ecran_aventure.isVisible()):
             self.ecran_aventure.hide()
             self.ecran_aventure.save_aventure()
+            self.page_aventure_pushButton_4.setText('Feuille Aventure')
         else:
+            self.page_aventure_pushButton_4.setText('Sauvegarder et fermer la feuille')
+            self.ecran_aventure.load_aventure()
             self.ecran_aventure.show()
     
     def next_chapitre(self):
@@ -485,6 +512,7 @@ class ECRAN_CHAPITRE(QDialog):
 
         elif(sender.objectName() == 'livrespushButton'):
             save_id = insert_sauvegarde_parties(id_usager, id_livre, id_chapitre, save_id)
+            self.ecran_aventure.reset_aventure()
             dictionaire = self.ecran_aventure.fetch_all_text_area()
             insert_sauvegarde_aventures(save_id, dictionaire)
 
@@ -565,8 +593,9 @@ class ECRAN_CHAPITRE(QDialog):
 
 
         if(index >= 0):
-            chapitre = field_fenetre_chapitre(index)
+            chapitre = field_fenetre_chapitre(self.ecran_aventure.id_livre, index)
             contenue = chapitre[0][3]
+            id_chapitre = chapitre[0][0]
 
             # //// AFFICHAGE ////
             txt_browser:QtWidgets.QTextBrowser = self.ecran_affichage_chapitre_textBrowser
@@ -575,6 +604,7 @@ class ECRAN_CHAPITRE(QDialog):
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:36pt; font-weight:400; font-style:normal;\">\n"
             f"{contenue}</body></html>"))
+            self.ecran_aventure.id_chapitre = id_chapitre
         else:
             txt_browser:QtWidgets.QTextBrowser = self.ecran_affichage_chapitre_textBrowser
             txt_browser.setHtml(_translate("EcranChapitres", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -582,8 +612,7 @@ class ECRAN_CHAPITRE(QDialog):
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:36pt; font-weight:400; font-style:normal;\">\n"
             f"{txt_default}</body></html>"))
-
-        self.ecran_aventure.id_chapitre = index+1
+        
 
 
 

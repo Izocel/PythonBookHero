@@ -269,15 +269,15 @@ def lister_sauvegardes_usager(usager_id:int) -> List[List]:
 
 
 # acheter_livre_usager(usager_id int, livre_id int) RETURNS TINYINT(1)
-def attribuer_livre_par_default() -> int:
+def attribuer_livre_par_default(odre_livre:int) -> int:
 
     users = list_data('usagers')
-    lepremierlivredanslistedelatable = list_data('livres')[0][0]
+    lelivrechoisie = list_data('livres')[odre_livre][0]
 
     resultat = 0
     for user in users:
 
-        func = f"SELECT acheter_livre_usager ({user[0]}, {lepremierlivredanslistedelatable});" 
+        func = f"SELECT acheter_livre_usager ({user[0]}, {lelivrechoisie});" 
         CURSEUR.execute(func)
         r = fetch_CURSEUR(CURSEUR)
         if(r != 0 and resultat == 0):
@@ -285,11 +285,11 @@ def attribuer_livre_par_default() -> int:
 
     return resultat
 
-def field_fenetre_chapitre(index:int) -> List[List[Any]]:
+def field_fenetre_chapitre(id_livre:int, index:int) -> List[List[Any]]:
     global CURSEUR
     global BASETABLE
     BASETABLE = 'chapitres_livres'
-    querry = select_data_querry(BASETABLE, "*", f"WHERE numero = {index}", "ORDER BY numero")
+    querry = select_data_querry(BASETABLE, "*", f"WHERE numero = {index} and id_livre = {id_livre}", "ORDER BY numero")
     CURSEUR.execute(querry)
     return fetch_CURSEUR(CURSEUR)
 
