@@ -387,12 +387,29 @@ class ECRAN_AVENTURE(QDialog):
 
 
     def load_aventure(self):
-        
-        pass
+
+
+        if(self.save_id):
+
+            # retourne seulement les champs lier aux text-areas (voir return)
+            champs_feuille = lister_feuille_usager(self.save_id)
+
+            self.discipline_textEdit.setPlainText(champs_feuille[0]),
+            self.endurance_loup_textEdit.setPlainText(champs_feuille[1]),
+            self.armes_textEdit.setPlainText(champs_feuille[2]),
+            self.objets_sac_textEdit.setPlainText(champs_feuille[3]),
+            self.repas_sac_textEdit.setPlainText(champs_feuille[4]),
+            self.habileter_textEdit.setPlainText(champs_feuille[5]),
+            self.endurance_textEdit.setPlainText(champs_feuille[6]),
+            self.objetsSpeciaux_textEdit.setPlainText(champs_feuille[7]),
+            self.bourse_textEdit.setPlainText(champs_feuille[8]),
+            self.quotient_attaque_textEdit.setPlainText(champs_feuille[9]),
+            self.endurance_ennemie_textEdit.setPlainText(champs_feuille[10])
+
 
     def cancel_aventure(self):
-        # && reload last loaded (save)
-        pass
+        self.load_aventure()
+        
 
 
 
@@ -463,7 +480,8 @@ class ECRAN_CHAPITRE(QDialog):
 
         if(sender.objectName() == 'savespushButton'):
             save_id = sender.save_id
-            # Ajouter la fonction de load feuilles aventure
+            self.ecran_aventure.save_id = save_id
+            self.ecran_aventure.load_aventure()
 
         elif(sender.objectName() == 'livrespushButton'):
             save_id = insert_sauvegarde_parties(id_usager, id_livre, id_chapitre, save_id)

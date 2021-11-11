@@ -1,5 +1,6 @@
 # Workspace related
 from mysql.connector import cursor
+from mysql.connector.abstracts import MYSQL_PY_TYPES
 from BibliSqlPython.fonctions_sql import *
 
 
@@ -435,3 +436,19 @@ def update_sauvegarde_aventure(id_save, dictValeur:dict[str]):
 
     CURSEUR.callproc(procedure, args)
     CURSEUR.reset()
+
+
+def lister_feuille_usager(id_save:int) -> List[List[Any]]:
+
+    global CURSEUR
+
+    q = select_data_querry(
+        'feuilles_aventure',
+        '*',
+        f'WHERE id_save = {id_save}',
+            '','', 
+            'LIMIT 1'
+            )
+    
+    CURSEUR.execute(q)
+    return fetch_CURSEUR(CURSEUR)[0][2:]
