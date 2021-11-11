@@ -32,19 +32,16 @@ def clearLayout(layout):
 from gestion_ui import *
 
 
-
-
 ############################################ CLASSES DE DIALOGUES ############################################
 
 ############################## MyStackedWidget ##############################
 # Extension de la classe provenant de QStackedWidget
-# Proprietées connu sur MyStackedWidget
+# Proprietées connues sur MyStackedWidget
     # connected_id
     # logged_in
     # settings
 #
 class MyStackedWidget(QStackedWidget):
-    
 
     connected_id:int = 0
     logged_in:bool = False
@@ -78,7 +75,6 @@ class MyStackedWidget(QStackedWidget):
         self.settings.setValue('window position', self.pos())
         self.settings.setValue('last index', self.currentIndex())
 
-
         self.kill_connection()
         return super().closeEvent(a0)
     
@@ -101,17 +97,16 @@ class MyStackedWidget(QStackedWidget):
             return -1
         return index
 
-
-
 ############################## ECRAN_USAGER ##############################
 # Extension de la classe provenant du designer (ecranusager.ui)
-# Proprietées connu sur ECRAN_USAGER
+# Proprietées connues sur ECRAN_USAGER
     # deconnectionpushButton
     # connectionpushButton
     # savespushButton
     # livrespushButton
     # LivreshorizontalLayout
     # SavesverticalLayout
+    # sectionHaut_groupBox
 #
 class ECRAN_USAGER(QDialog):
 
@@ -234,7 +229,7 @@ class ECRAN_USAGER(QDialog):
 
 #### ECRAN_ACCEUIL ##############################################
 # Extension de la classe provenant du designer (ecranacceuil.ui)
-# Proprietées connu sur ECRAN_ACCEUIL
+# Proprietées connues sur ECRAN_ACCEUIL
     # connectionpushButton (btn)
     # motdepasse_lineEdit (input)
     # courriel_lineEdit (input)
@@ -331,10 +326,23 @@ class ECRAN_ACCEUIL(QDialog):
 
 #### ECRAN_AVENTURE ##############################################
 # Extension de la classe provenant du designer (ecranchapitre.ui)
-# Proprietées connu sur ECRAN_CHAPITRE
-    # ?
-    # ?
-    # ?
+# Proprietées connues sur ECRAN_CHAPITRE
+    # save_id
+    # id_user
+    # id_chapitre
+    # save_pushButton
+    # cancel_pushButton
+    # discipline_textEdit
+    # armes_textEdit
+    # objets_sac_textEdit
+    # repas_sac_textEdit
+    # habileter_textEdit
+    # endurance_textEdit
+    # objetsSpeciaux_textEdit
+    # bourse_textEdit
+    # endurance_loup_textEdit
+    # quotient_attaque_textEdit
+    # endurance_ennemie_textEdit
 #
 class ECRAN_AVENTURE(QDialog):
 
@@ -413,7 +421,6 @@ class ECRAN_AVENTURE(QDialog):
         self.parent.page_aventure_pushButton_4.setText("Feuille Aventure")
         self.load_aventure()
 
-
     def reset_aventure(self):
 
         self.discipline_textEdit.setPlainText('')
@@ -429,14 +436,16 @@ class ECRAN_AVENTURE(QDialog):
         self.endurance_ennemie_textEdit.setPlainText('')
         
 
-
-
 #### ECRAN_CHAPITRE ##############################################
 # Extension de la classe provenant du designer (ecranchapitre.ui)
-# Proprietées connu sur ECRAN_CHAPITRE
+# Proprietées connues sur ECRAN_CHAPITRE
     # selection_chapitre_comboBox_2
     # ecran_affichage_chapitre_textBrowser
     # page_aventure_pushButton_4
+    # retour_accueil_pushButton
+    # page_precedente_pushButton_2
+    # page_aventure_pushButton_4
+    # titrelivre_label
 #
 class ECRAN_CHAPITRE(QDialog):
 
