@@ -123,22 +123,22 @@ def mysql_app_create_tables() -> None:
     CURSEUR.reset()
 
 
-        # TABLE FEUILLES_AVENTURE
+    # TABLE FEUILLES_AVENTURE
     sql = '''CREATE TABLE IF NOT EXISTS feuilles_aventure(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     id_save INT NOT NULL,
-    discipline TEXT
-    armes TEXT
-    objets_sac TEXT
-    repas_sac TEXT
-    habileter TEXT
-    endurance TEXT
-    objets_speciaux TEXT
-    bourse TEXT
-    endurance_loup TEXT
-    quotien_attaque TEXT
-    endurance_ennemie TEXT
-    FOREIGN KEY (id_save) REFERENCES sauvegardes_parties(id),
+    discipline TEXT,
+    armes TEXT,
+    objets_sac TEXT,
+    repas_sac TEXT,
+    habileter TEXT,
+    endurance TEXT,
+    objets_speciaux TEXT,
+    bourse TEXT,
+    endurance_loup TEXT,
+    quotien_attaque TEXT,
+    endurance_ennemie TEXT,
+    FOREIGN KEY (id_save) REFERENCES sauvegardes_parties(id)
     )'''
     CURSEUR.execute(sql)
     CURSEUR.reset()
@@ -326,31 +326,31 @@ def insert_sauvegarde_aventures(id_save:int, dictValeur:dict[str]) -> int:
     quotien_attaque = None
     endurance_ennemie = None
 
-    id_feuille_aventure = None
+    id_feuille_aventure = -1
 
     for key in dictValeur:
         if(key == 'discipline'):
-            discipline = dict[key]
+            discipline = dictValeur[key]
         elif(key == 'armes'):
-            armes = dict[key]
+            armes = dictValeur[key]
         elif(key == 'objets_sac'):
-            objets_sac = dict[key]
+            objets_sac = dictValeur[key]
         elif(key == 'repas_sac'):
-            repas_sac = dict[key]
+            repas_sac = dictValeur[key]
         elif(key == 'habileter'):
-            habileter = dict[key]
+            habileter = dictValeur[key]
         elif(key == 'endurance'):
-            endurance = dict[key]
+            endurance = dictValeur[key]
         elif(key == 'objets_speciaux'):
-            objets_speciaux = dict[key]
+            objets_speciaux = dictValeur[key]
         elif(key == 'bourse'):
-            bourse = dict[key]
+            bourse = dictValeur[key]
         elif(key == 'endurance_loup'):
-            endurance_loup = dict[key]
+            endurance_loup = dictValeur[key]
         elif(key == 'quotien_attaque'):
-            quotien_attaque = dict[key]
+            quotien_attaque = dictValeur[key]
         elif(key == 'endurance_ennemie'):
-            endurance_ennemie = dict[key]
+            endurance_ennemie = dictValeur[key]
         else:
             # insert_sauvegarde_aventures(fetch_another)
             print("Ça chie en sale !")
@@ -371,14 +371,67 @@ def insert_sauvegarde_aventures(id_save:int, dictValeur:dict[str]) -> int:
     id_feuille_aventure
     )
 
-    id_feuille_aventure = CURSEUR.callproc(procedure, args)[11]
+    retour = CURSEUR.callproc(procedure, args)[12]
     CURSEUR.reset()
-    return id_feuille_aventure
+    return retour
 
-def update_sauvegarde_aventure(id_save:int, nom_champs:str, valeur:str) -> None:
+def update_sauvegarde_aventure(id_save, dictValeur:dict[str]):
     global CURSEUR
     procedure:str = 'update_aventure'
 
-    args = (id_save, nom_champs, valeur)
+    discipline = None
+    armes = None
+    objets_sac = None
+    repas_sac = None
+    habileter = None
+    endurance = None
+    objets_speciaux = None
+    bourse = None
+    endurance_loup = None
+    quotien_attaque = None
+    endurance_ennemie = None
+
+    for key in dictValeur:
+        if(key == 'discipline'):
+            discipline = dictValeur[key]
+        elif(key == 'armes'):
+            armes = dictValeur[key]
+        elif(key == 'objets_sac'):
+            objets_sac = dictValeur[key]
+        elif(key == 'repas_sac'):
+            repas_sac = dictValeur[key]
+        elif(key == 'habileter'):
+            habileter = dictValeur[key]
+        elif(key == 'endurance'):
+            endurance = dictValeur[key]
+        elif(key == 'objets_speciaux'):
+            objets_speciaux = dictValeur[key]
+        elif(key == 'bourse'):
+            bourse = dictValeur[key]
+        elif(key == 'endurance_loup'):
+            endurance_loup = dictValeur[key]
+        elif(key == 'quotien_attaque'):
+            quotien_attaque = dictValeur[key]
+        elif(key == 'endurance_ennemie'):
+            endurance_ennemie = dictValeur[key]
+        else:
+            # insert_sauvegarde_aventures(fetch_another)
+            print("Ça chie en sale !")
+
+    args = (
+    id_save,
+    discipline,
+    armes,
+    objets_sac,
+    repas_sac,
+    habileter,
+    endurance,
+    objets_speciaux,
+    bourse,
+    endurance_loup,
+    quotien_attaque,
+    endurance_ennemie
+    )
+
     CURSEUR.callproc(procedure, args)
     CURSEUR.reset()

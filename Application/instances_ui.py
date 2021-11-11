@@ -358,30 +358,28 @@ class ECRAN_AVENTURE(QDialog):
         liste_valeur = self.fetch_all_text_area()
 
         if(not self.save_id):
-            self.save_id = insert_sauvegarde_aventures(self.save_id) 
+            self.save_id = insert_sauvegarde_aventures(self.save_id, liste_valeur) 
         else:
             update_sauvegarde_parties(self.save_id, self.id_user, self.id_livre, self.id_chapitre)
-            for key in liste_valeur:
-                champ = key
-                valeur =  liste_valeur[key]
-                update_sauvegarde_aventure(self.save_id, champ, valeur)
+            update_sauvegarde_aventure(self.save_id, liste_valeur)
 
+        self.hide()
 
+    # pour écrire == setPlainText(str)
     def fetch_all_text_area(self) -> list[str]:
         liste:dict[str] = {
-            'discipline' : self.discipline_textEdit,
-            'endurance_loup' : self.endurance_loup_textEdit,
-            'armes' : self.armes_textEdit,
-            'objets_sac' : self.objets_sac_textEdit,
-            'repas_sac' : self.repas_sac_textEdit,
-            'habileter' : self.habileter_textEdit,
-            'endurance' : self.endurance_textEdit,
-            'objetsSpeciaux' : self.objetsSpeciaux_textEdit,
-            'bourse' : self.bourse_textEdit,
-            'quotient_attaque' : self.quotient_attaque_textEdit,
-            'endurance_ennemie' : self.endurance_ennemie_textEdit
+            'discipline' : self.discipline_textEdit.toPlainText(),
+            'endurance_loup' : self.endurance_loup_textEdit.toPlainText(),
+            'armes' : self.armes_textEdit.toPlainText(),
+            'objets_sac' : self.objets_sac_textEdit.toPlainText(),
+            'repas_sac' : self.repas_sac_textEdit.toPlainText(),
+            'habileter' : self.habileter_textEdit.toPlainText(),
+            'endurance' : self.endurance_textEdit.toPlainText(),
+            'objets_speciaux' : self.objetsSpeciaux_textEdit.toPlainText(),
+            'bourse' : self.bourse_textEdit.toPlainText(),
+            'quotien_attaque' : self.quotient_attaque_textEdit.toPlainText(),
+            'endurance_ennemie' : self.endurance_ennemie_textEdit.toPlainText()
         }
-
         return liste
 
 
@@ -422,8 +420,6 @@ class ECRAN_CHAPITRE(QDialog):
         self.page_precedente_pushButton_2.clicked.connect(lambda: self.prev_chapitre())
         self.page_suivante_pushButton_3.clicked.connect(lambda: self.next_chapitre())
         self.page_aventure_pushButton_4.clicked.connect(lambda: self.afficher_aventure())
-        self.save_pushButton.clicked.connect(lambda: self.save_aventure())
-        self.cancel_pushButton.clicked.connect(lambda: self.cancel_aventure())
         
         
 
@@ -433,7 +429,7 @@ class ECRAN_CHAPITRE(QDialog):
         self.parent.switchTo('EcranUsager')
 
     def afficher_aventure(self):
-        if(self.ecran_aventure.isVisible):
+        if(self.ecran_aventure.isVisible()):
             self.ecran_aventure.hide()
             self.ecran_aventure.save_aventure()
         else:
@@ -469,7 +465,9 @@ class ECRAN_CHAPITRE(QDialog):
 
         elif(sender.objectName() == 'livrespushButton'):
             save_id = insert_sauvegarde_parties(id_usager, id_livre, id_chapitre, save_id)
-        
+            dictionaire = self.ecran_aventure.fetch_all_text_area()
+            insert_sauvegarde_aventures(save_id, dictionaire)
+
         self.ecran_aventure.save_id = save_id
         self.ecran_aventure.id_user = id_usager
         self.ecran_aventure.id_livre = id_livre

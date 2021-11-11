@@ -475,11 +475,21 @@ class Ui_EcranAventure(object):
         self.titre_label.setText(_translate("EcranAventure", "Feuille Aventure"))
         self.discipline_label.setText(_translate("EcranAventure", "Discipline Kai"))
         self.notes_label.setText(_translate("EcranAventure", "Notes"))
+        self.discipline_textEdit.setHtml(_translate("EcranAventure", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.armes_label.setText(_translate("EcranAventure", "Armes"))
         self.notes_label_2.setText(_translate("EcranAventure", "Notes"))
         self.sac_label_groupBox.setTitle(_translate("EcranAventure", "Sac à Dos"))
         self.objet_sac_label.setText(_translate("EcranAventure", "Objets"))
         self.repas_sac_label.setText(_translate("EcranAventure", "Repas"))
+        self.repas_sac_textEdit.setHtml(_translate("EcranAventure", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.habileter_label.setText(_translate("EcranAventure", "Habileté"))
         self.endurance_label.setText(_translate("EcranAventure", "Endurance"))
         self.objetsSpeciaux_label.setText(_translate("EcranAventure", "Objets Spéciaux"))

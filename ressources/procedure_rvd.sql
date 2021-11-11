@@ -32,7 +32,7 @@ END //
 DROP PROCEDURE IF EXISTS insert_aventure;
 DELIMITER //
 CREATE PROCEDURE insert_aventure(
-    IN id_save INT,
+    IN save_id INT,
     IN discipline TEXT,
     IN armes TEXT,
     IN objets_sac TEXT,
@@ -47,7 +47,7 @@ CREATE PROCEDURE insert_aventure(
     OUT retour_proc INT
     )
 BEGIN
-  INSERT INTO sauvegardes_parties (
+  INSERT INTO feuilles_aventure (
     id_save, 
     discipline,
     armes,
@@ -63,7 +63,7 @@ BEGIN
     )
 
     VALUES (
-    id_save,
+    save_id,
     discipline,
     armes,
     objets_sac,
@@ -82,12 +82,36 @@ END //
 
 DROP PROCEDURE IF EXISTS update_aventure;
 DELIMITER //
-CREATE PROCEDURE update_aventure(IN id_save INT, nom_champs VARCHAR(50), valeur)
+CREATE PROCEDURE update_aventure(
+  IN save_id INT,
+  IN discipline TEXT,
+  IN armes TEXT,
+  IN objets_sac TEXT,
+  IN repas_sac TEXT,
+  IN habileter TEXT,
+  IN endurance TEXT,
+  IN objets_speciaux TEXT,
+  IN bourse TEXT,
+  IN endurance_loup TEXT,
+  IN quotien_attaque TEXT,
+  IN endurance_ennemie TEXT
+)
 BEGIN
   UPDATE feuilles_aventure
+
   SET
-  nom_champs = valeur
-  WHERE
-    id = id_save;
-    
+    id_save = save_id,
+    discipline = discipline ,
+    armes = armes ,
+    objets_sac = objets_sac ,
+    repas_sac = repas_sac ,
+    habileter = habileter ,
+    endurance = endurance ,
+    objets_speciaux = objets_speciaux ,
+    bourse = bourse ,
+    endurance_loup = endurance_loup ,
+    quotien_attaque = quotien_attaque ,
+    endurance_ennemie = endurance_ennemie
+
+  WHERE id_save = save_id;
 END //
