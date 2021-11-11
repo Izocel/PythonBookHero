@@ -275,7 +275,7 @@ class ECRAN_ACCEUIL(QDialog):
         if(mysql_app_connection(bd_config, True)):
             self.parent.set_logged_in(True)
 
-            mysql_app_create_tables()
+            #mysql_app_create_tables()
             mysql_app_insert_user()
             inserer_livres()
             inserer_chapitres_livres()
@@ -287,8 +287,9 @@ class ECRAN_ACCEUIL(QDialog):
         conn_fields = {}
         conn_fields['host'] = 'localhost'
         conn_fields['port'] = '3306'
-        conn_fields['user'] = 'root' #TODO: Faire un user juste pour cette BD
-        conn_fields['password'] = '@mysqlroot2022'  #getpass("Entrer le mot de passe mysql: \n ==> ")
+        conn_fields['database'] = 'python_book_hero'
+        conn_fields['user'] = 'legarsdulivre' #TODO: Faire un user juste pour cette BD
+        conn_fields['password'] = '123456'  #getpass("Entrer le mot de passe mysql: \n ==> ")
 
         return conn_fields
 
