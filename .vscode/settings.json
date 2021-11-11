@@ -1,3 +1,18 @@
 {
-    "python.pythonPath": "C:\\Program Files\\Python310\\python.exe"
+    "python.pythonPath": "C:\\Program Files\\Python310\\python.exe",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "Application/__pycache__": false,
+        "**/__pycache__": true,
+        "__pycache__": false
+    },
+    "explorerExclude.backup": null,
+    "files.associations": {
+        "*.yaml": "home-assistant"
+    },
 }

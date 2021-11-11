@@ -1,28 +1,26 @@
-from mysql import connector as _mysqlConnector # Alias
+import os
+import sys
+from typing import *
+from mysql.connector.connection import  *
 from getpass import getpass
-
-
-def __init__(self):
-    pass
-
-# Mysql Connection class
-__MySqlConnType = _mysqlConnector.connection.MySQLConnection
-
+import hashlib
+from datetime import datetime
 
 # Variables globales
 BD_CONNECTION = {}
 BD_CONFIG = {}
 CURSEUR = {}
+BASETABLE = ''
 
-def get_config(key:str = ''):
-
+def get_config(key:str = '') -> Any:
+    global BD_CONFIG
     if(key == ''):
         return BD_CONFIG
     else:
         return BD_CONFIG[key]
 
 
-def disconnect_from_mysql():
+def disconnect_from_mysql() -> bool:
     global BD_CONNECTION
     global BD_CONFIG
     global CURSEUR
@@ -40,7 +38,7 @@ def disconnect_from_mysql():
 
 
 ####-####-####-#### MySQL App Connection ####-####-####-#### 
-def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:int = 5):
+def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:int = 5) -> CursorBase:
 
     global BD_CONNECTION
     global BD_CONFIG
@@ -51,25 +49,25 @@ def connect_to_mysql(config_input:dict = {}, autocommit:bool = False, max_retry:
     max_retry = min(max_retry, 15)
 
     for x in range(max_retry):
-        while( type(BD_CONNECTION) is not __MySqlConnType ):
-
+        if( type(BD_CONNECTION) is not MySQLConnection ):
+            
             BD_CONFIG = {
                 'host' : config_input['host'],
                 'user' : config_input['user'],
                 'password' : config_input['password'],
-                'database' : '',
+                'database' : config_input['database'],
                 'autocommit': autocommit
             }
-
-            #TODO:.dontDieOnBadInfosPlz()
-            BD_CONNECTION = _mysqlConnector.connect(**BD_CONFIG)
+            BD_CONNECTION = MySQLConnection()
+            BD_CONNECTION.connect(**BD_CONFIG)
             config_warning(BD_CONNECTION)
+    BD_CONFIG['database'] = 'python_book_hero'
     CURSEUR = BD_CONNECTION.cursor()
     print("\n La session SQL est établie")
     return CURSEUR
 
 
-def config_warning( connection ):
+def config_warning( connection ) -> None:
 
     autocommit = connection.autocommit
 
@@ -82,25 +80,38 @@ def config_warning( connection ):
         print("Les transactions seront automatiquement soumissent au LGBD...\n")
 
 
-def show_databases_querry():
+def show_databases_querry() -> str:
     querry = "SHOW DATABASES;"
     return querry
 
-def show_tables_querry(database):
+def show_tables_querry(database) -> str:
     querry = "SHOW TABLES FROM " + database
     return querry
 
-def select_data_querry(table):
-    querry = "SELECT * FROM ;" + table
+def select_data_querry(table:str, fields:str = '*', where:str = '', order:str = '', group:str = '',  limit:str = '') -> str:
+    querry = "SELECT "+ fields + " FROM " + table
+
+    if(where != ''):
+        querry += " " + where
+
+    if(order != ''):
+        querry += " " + order
+
+    if(group != ''):
+        querry += " " + group
+
+    if(limit != ''):
+        querry += " " + limit
+
     return querry
 
-def select_colum_name_type_querry(table, database):
+def select_colum_name_type_querry(table, database) -> str:
 
     querry = "SELECT COLUMN_NAME,COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS "
     querry +="WHERE TABLE_SCHEMA='" + database +"' AND TABLE_NAME='" + table + "';"
     return querry
 
-def CURSEUR_name_and_type(CURSEUR, table, database):
+def CURSEUR_name_and_type(CURSEUR, table, database) -> Dict[str,Any]:
     
     tpye_and_colum_querry = select_colum_name_type_querry(table, database)
     CURSEUR.execute(tpye_and_colum_querry)
@@ -117,7 +128,7 @@ def CURSEUR_name_and_type(CURSEUR, table, database):
 
     return {'querry': tpye_and_colum_querry, 'results': table_resultat, 'types': table_type, 'names': table_col}
 
-def insertion_querry(table, inserts = [[]], champs = []):
+def insertion_querry(table:str, inserts = [[]], champs = []) -> Dict[str,Any]:
 
     querry = "INSERT INTO " + table
 
@@ -163,7 +174,7 @@ def insertion_querry(table, inserts = [[]], champs = []):
     }
 
 
-def update_querry(table :str, updates :list[list], champs :list, conds_list :list[list]):
+def update_querry(table :str, updates :list[list], champs :list, conds_list :list[list]) ->  Dict[str,Any]:
 
     querry = "UPDATE " + table + " SET "
 
@@ -205,71 +216,7 @@ def update_querry(table :str, updates :list[list], champs :list, conds_list :lis
         'val' : valeursSql
     }
 
-def get_input_question(champ, type):
-    return "\n(Laisser vide pour default/ancienne_valeur)\nEntrée la valeur pour "+ champ +".\n type: " + type +" ===> "
-
-def get_cond_question(champ, type):
-    return "\n(Laisser vide pour ignorer)\nEntrée la valeur comparative pour "+ champ +".\n type: " + type +" ===> "
-
-def dataForm(table :str, database :str, CURSEUR):
-
-    name_n_type_list = CURSEUR_name_and_type(CURSEUR, table, database)['results']
-
-    champs:list = []
-    valeur:list[list] = [[]]
-    result:dict[champs,valeur] = {}
-
-    u_input = ""
-
-    print("\nEntrée les valeurs d'insert/update. Laisser vide pour default/ancienne_valeur")
-    for string_list in name_n_type_list:
-
-        champ = string_list[0]
-        sql_type = string_list[1]
-
-        question = get_input_question(champ, sql_type)
-        u_input = input(question)
-
-        if(u_input != ""):
-            formated_input = convert_string_to_sql_type(u_input, sql_type)
-
-            if(formated_input):
-                champs.append(champ)
-                valeur[0].append(formated_input)
-
-    result = { 'champs' : champs, 'valeurs': valeur}
-    return result
-
-def condForm(table :str, database :str, CURSEUR):
-
-    name_n_type_list = CURSEUR_name_and_type(CURSEUR, table, database)['results']
-
-    champs:list = []
-    valeur:list[list] = [[]]
-    result:dict[champs,valeur] = {}
-
-    u_input = ""
-
-    print("\nEntrée les valeurs conditionelles. Laisser vide pour ne pas utiliser ce champs en condition.")
-    for string_list in name_n_type_list:
-
-        champ = string_list[0]
-        sql_type = string_list[1]
-
-        question = get_cond_question(champ, sql_type)
-        u_input = input(question)
-
-        if(u_input != ""):
-            formated_input = convert_string_to_sql_type(u_input, sql_type)
-
-            if(formated_input):
-                champs.append(champ)
-                valeur[0].append(formated_input)
-
-    result = { 'cond_champs' : champs, 'cond_valeurs': valeur}
-    return result
-
-def convert_string_to_sql_type(input_str: str, sql_type_str: str):
+def convert_string_to_sql_type(input_str: str, sql_type_str: str) -> str:
 
     if( sql_type_str.startswith("char") ):
         return input_str
@@ -296,7 +243,7 @@ def convert_string_to_sql_type(input_str: str, sql_type_str: str):
         return input_str
     pass
 
-def dataTypeStringNotation(value: any):
+def dataTypeStringNotation(value: Any) -> str:
 
     percent_char = chr(37)
 
@@ -311,8 +258,7 @@ def dataTypeStringNotation(value: any):
 
     return ''
 
-def fetch_CURSEUR(CURSEUR, print_me = False):
-
+def fetch_CURSEUR(CURSEUR, print_me = False) -> List[List[Any]]:
     if(print_me == True):
         print("\n")
 
@@ -328,97 +274,36 @@ def fetch_CURSEUR(CURSEUR, print_me = False):
     CURSEUR.reset()
     return table
 
-def insert_commit_check(data, querry, basetable):
+def hash_sha2_data(datalist:list[str] = [], hash_length:int = 256) -> List[str]:
 
-    if(BD_CONNECTION.autocommit == True):
+    hashes = []
 
-        # Try
-        CURSEUR.execute(querry['sql'], querry['val'][0])
-        
-        # Catch
-        fetch_CURSEUR(CURSEUR) 
+    if hash_length == 224:
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha224(encoded)
+            hashes.append(result.hexdigest())
 
-        querry = "SELECT * FROM " + basetable + " WHERE id="+ str(CURSEUR.lastrowid)
-        CURSEUR.execute(querry)
-        print("Donnée inserée:")
-        fetch_CURSEUR(CURSEUR)
+    elif hash_length == 384:
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha384(encoded)
+            hashes.append(result.hexdigest())
 
-    else:
-        print("\n" + str( data['champs'] ) )
-        print( str( data['valeurs'][0] ) )
-        u_input = input("\n Êtes-vous certains de vouloir insérer cette donnée? (y/n)\n ==> ")
+    elif hash_length == 512:
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha512(encoded)
+            hashes.append(result.hexdigest())
 
-        if( u_input == 'y'):
+    else: # sha256 if hash_length not supported
+        for clear_str in datalist:
+            string = clear_str
+            encoded = string.encode()
+            result = hashlib.sha256(encoded)
+            hashes.append(result.hexdigest())
 
-            # Try
-            CURSEUR.execute(querry['sql'], querry['val'][0])
-            
-            # Catch
-            fetch_CURSEUR(CURSEUR)
-
-            BD_CONNECTION.commit()
-            querry = "SELECT * FROM " + basetable + " WHERE id="+ str(CURSEUR.lastrowid)
-            CURSEUR.execute(querry)
-            print("Donnée inserée:")
-            fetch_CURSEUR(CURSEUR)
-        else:
-            pass
-
-def update_commit_check(data, querry, cond, basetable):
-
-    if(BD_CONNECTION.autocommit == True):
-
-        # Try
-        CURSEUR.execute(querry['sql'], querry['val'][0])
-        
-        # Catch
-        print("Données modifiés !")
-
-    else:
-
-        print("\nCONDITIONS")
-        if(len(cond) > 1):
-            print("AND")
-            print( str( cond['cond_champs'] ) )
-            print( str( cond['cond_valeurs'][0] ) +"\n" )
-        else:
-            print("Toutes les données !!!\n")
-
-        print("\nMODIFICATIONS")
-        print( str( data['champs'] ) )
-        print( str( data['valeurs'][0] ) )
-        u_input = input("\n Êtes-vous certains de vouloir modifier ces données? (y/n)\n ==> ")
-
-        if( u_input == 'y'):
-
-            # Try
-            CURSEUR.execute(querry['sql'], querry['val'][0])
-            
-            # Catch
-
-            BD_CONNECTION.commit()
-            print("Données modifiés !")
-        else:
-            pass
-
-def delete_commit_check(querry):
-
-    if(BD_CONNECTION.autocommit == True):
-
-        # Try 
-        CURSEUR.execute(querry)
-        # Catch
-        
-        print("\n Donnée supprimé !!!")
-    else:
-
-        u_input = input("\n Êtes-vous certains de vouloir supprimer cette donnée? (y/n)\n ==> ")
-        if(u_input == 'y'):
-
-            # Try 
-            CURSEUR.execute(querry)
-            # Catch
-            BD_CONNECTION.commit()
-            print("\n Donnée supprimé !!!")
-
-
+    return hashes
