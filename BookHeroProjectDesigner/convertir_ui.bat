@@ -7,4 +7,7 @@ copy BookHeroProjectDesigner\ecranacceuil.ui Application\Bibli_ui\ecranacceuil.u
 pyuic5 -x BookHeroProjectDesigner/selectionchapitres.ui -o BookHeroProjectDesigner/last_python_ui/selectionchapitres.py
 copy BookHeroProjectDesigner\selectionchapitres.ui Application\Bibli_ui\selectionchapitres.ui
 
+pyuic5 -x BookHeroProjectDesigner/feuilleaventure.ui -o BookHeroProjectDesigner/last_python_ui/feuilleaventure.py
+copy BookHeroProjectDesigner\feuilleaventure.ui Application\Bibli_ui\feuilleaventure.ui
+
 echo Succes !!!

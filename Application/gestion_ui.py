@@ -203,7 +203,7 @@ def lister_chapitre(livre:int = 1):
     global CURSEUR
     global BASETABLE
     BASETABLE = 'chapitres_livres'
-    select_chapitres = select_data_querry(BASETABLE, "*", "", "ORDER BY numero")
+    select_chapitres = select_data_querry(BASETABLE, "*", f"WHERE id_livre = {livre}", "ORDER BY numero")
     CURSEUR.execute(select_chapitres)
     chapitres = fetch_CURSEUR(CURSEUR)
 

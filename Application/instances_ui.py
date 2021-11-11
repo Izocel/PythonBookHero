@@ -54,7 +54,6 @@ class MyStackedWidget(QStackedWidget):
     def set_connected_id(self, id:int) -> None:
         self.connected_id = id
 
-
     def get_logged_in(self) -> bool:
         return self.logged_in
     def set_logged_in(self, state:bool) -> None:
@@ -270,7 +269,7 @@ class ECRAN_ACCEUIL(QDialog):
         conn_fields['host'] = 'localhost'
         conn_fields['port'] = '3306'
         conn_fields['user'] = 'root' #TODO: Faire un user juste pour cette BD
-        conn_fields['password'] = '@mysqlroot2022'  #getpass("Entrer le mot de passe mysql: \n ==> ")
+        conn_fields['password'] = 'mysql'  #getpass("Entrer le mot de passe mysql: \n ==> ")
 
         return conn_fields
 
@@ -309,17 +308,49 @@ class ECRAN_ACCEUIL(QDialog):
             else: # Ajouter un message à l'écran de mauvaise infos....
                 self.app_disconnect()
                 self.label_mauvaise_infos.show()
+
+#### ECRAN_AVENTURE ##############################################
+# Extension de la classe provenant du designer (ecranchapitre.ui)
+# Proprietées connu sur ECRAN_CHAPITRE
+    # ?
+    # ?
+    # ?
+#
+class ECRAN_AVENTURE(QDialog):
+    
+    parent:MyStackedWidget
+
+    def __init__(self):
+        super(ECRAN_AVENTURE, self).__init__()
+        ui_path =  os.path.dirname(os.path.abspath(__file__))
+        ui_path += '\\Bibli_ui\\feuilleaventure.ui'
+        loadUi(ui_path, self)
+
+    def setup_logics(self):
+        self.save_pushButton.clicked.connect(lambda: self.save_aventure())
+        self.cancel_pushButton.clicked.connect(lambda: self.cancel_aventure())
             
+    def save_aventure():
+        
+        pass
+
+    def cancel_aventure():
+
+        pass
+
+
+
 #### ECRAN_CHAPITRE ##############################################
 # Extension de la classe provenant du designer (ecranchapitre.ui)
 # Proprietées connu sur ECRAN_CHAPITRE
     # selection_chapitre_comboBox_2
     # ecran_affichage_chapitre_textBrowser
-    # ?
+    # page_aventure_pushButton_4
 #
 class ECRAN_CHAPITRE(QDialog):
 
     parent:MyStackedWidget
+    ecran_aventure:ECRAN_AVENTURE
 
     def __init__(self):
         super(ECRAN_CHAPITRE, self).__init__()
@@ -329,16 +360,23 @@ class ECRAN_CHAPITRE(QDialog):
 
     def setup_logics(self, w_parent:MyStackedWidget):
         self.parent = w_parent
+        self.ecran_aventure = ECRAN_AVENTURE()
+        self.ecran_aventure.setup_logics()
         self.retour_accueil_pushButton.clicked.connect(lambda: self.call_home())
         self.page_precedente_pushButton_2.clicked.connect(lambda: self.prev_chapitre())
         self.page_suivante_pushButton_3.clicked.connect(lambda: self.next_chapitre())
-        pass
+        self.page_aventure_pushButton_4.clicked.connect(lambda: self.afficher_aventure())
+        
+        
 
     def call_home(self):
         ecran_usager:ECRAN_USAGER = self.parent.findChild(ECRAN_USAGER, 'EcranUsager')
         ecran_usager.refresh_ui()
         self.parent.switchTo('EcranUsager')
 
+    def afficher_aventure(self):
+        self.ecran_aventure.show()
+    
     def next_chapitre(self):
         chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
         max = chapitres_comboBox.count()-1
@@ -359,9 +397,6 @@ class ECRAN_CHAPITRE(QDialog):
         sender = self.sender()
         id_livre = sender.id_livre
         num_save_chapitre = sender.num_chapitre
-
-        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
-        chapitres_comboBox.clear()
 
         chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
         chapitres_comboBox.clear()
@@ -451,3 +486,6 @@ class ECRAN_CHAPITRE(QDialog):
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:36pt; font-weight:400; font-style:normal;\">\n"
             f"{txt_default}</body></html>"))
+
+
+
