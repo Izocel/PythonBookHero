@@ -360,11 +360,42 @@ ALTER TABLE `sauvegardes_parties`
   ADD CONSTRAINT `sauvegardes_parties_ibfk_3` FOREIGN KEY (`id_chapitre`) REFERENCES `chapitres_livres` (`id`);
 COMMIT;
 
+
+
+
+DROP TRIGGER IF EXISTS titre_livre_maj;
+DELIMITER $$
+/* S'assurrer que la première lettre du titre d'un livre inséré dans la bd sois en Majuscule! (À l'insertion)*/	
+CREATE TRIGGER titre_livre_maj BEFORE INSERT ON livres
+  FOR EACH ROW
+	BEGIN
+		SET NEW.titre = Concat(UPPER(LEFT(NEW.titre,1)),LOWER(SUBSTRING(NEW.titre,2)));
+	END $$        
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS verif_courriel;
+DELIMITER $$
+/* Vérifier que le courriel n'est pas vide et que le @ soit présent, sinon lève une execption.*/
+CREATE TRIGGER verif_courriel BEFORE INSERT ON usagers
+  FOR EACH ROW
+	BEGIN
+    DECLARE msg VARCHAR(128);
+    
+    IF NEW.courriel IS NOT NULL AND NEW.courriel LIKE '%@%' THEN 
+          SET NEW.courriel = NEW.courriel;
+	ELSE
+        SET msg = concat('CourrielTriggerErreur: Courriel invalide sans @ ou courriel vide. Désolé!: ', cast(NEW.courriel AS CHAR));
+        SIGNAL SQLSTATE '45000' set message_text = msg;
+    END IF;
+		
+	END $$        
+	
+DELIMITER ;
+
+
 CREATE USER 'legarsdulivre'@'localhost' IDENTIFIED BY '123456';
 GRANT SELECT, INSERT, UPDATE, EXECUTE ON `python_book_hero`.* TO `legarsdulivre`@`localhost`;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
