@@ -123,6 +123,28 @@ def mysql_app_create_tables() -> None:
     CURSEUR.reset()
 
 
+        # TABLE FEUILLES_AVENTURE
+    sql = '''CREATE TABLE IF NOT EXISTS feuilles_aventure(
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    id_save INT NOT NULL,
+    discipline TEXT
+    armes TEXT
+    objets_sac TEXT
+    repas_sac TEXT
+    habileter TEXT
+    endurance TEXT
+    objets_speciaux TEXT
+    bourse TEXT
+    endurance_loup TEXT
+    quotien_attaque TEXT
+    endurance_ennemie TEXT
+    FOREIGN KEY (id_save) REFERENCES sauvegardes_parties(id),
+    )'''
+    CURSEUR.execute(sql)
+    CURSEUR.reset()
+
+
+
 def mysql_app_connection(config_input:dict = {}, autocommit:bool = False) -> cursor:
 
     global CURSEUR
@@ -270,12 +292,8 @@ def field_fenetre_chapitre(index:int) -> List[List[Any]]:
     CURSEUR.execute(querry)
     return fetch_CURSEUR(CURSEUR)
 
-
-
 def insert_sauvegarde_parties(id_user:int, id_livre:int, id_chapitre:int, out_id_save:int) -> int:
     global CURSEUR
-    global BASETABLE
-    BASETABLE = 'sauvegardes_parties'
     procedure:str = 'insert_sauvegarde'
 
     args = ( id_user, id_livre, id_chapitre, out_id_save)
@@ -285,10 +303,82 @@ def insert_sauvegarde_parties(id_user:int, id_livre:int, id_chapitre:int, out_id
 
 def update_sauvegarde_parties(id_save:int, id_user:int, id_livre:int, id_chapitre:int) -> None:
     global CURSEUR
-    global BASETABLE
-    BASETABLE = 'sauvegardes_parties'
     procedure:str = 'update_sauvegarde'
 
     args = ( id_save, id_user, id_livre, id_chapitre)
+    CURSEUR.callproc(procedure, args)
+    CURSEUR.reset()
+
+
+def insert_sauvegarde_aventures(id_save:int, dictValeur:dict[str]) -> int:
+    global CURSEUR
+    procedure:str = 'insert_aventure'
+
+    discipline = None
+    armes = None
+    objets_sac = None
+    repas_sac = None
+    habileter = None
+    endurance = None
+    objets_speciaux = None
+    bourse = None
+    endurance_loup = None
+    quotien_attaque = None
+    endurance_ennemie = None
+
+    id_feuille_aventure = None
+
+    for key in dictValeur:
+        if(key == 'discipline'):
+            discipline = dict[key]
+        elif(key == 'armes'):
+            armes = dict[key]
+        elif(key == 'objets_sac'):
+            objets_sac = dict[key]
+        elif(key == 'repas_sac'):
+            repas_sac = dict[key]
+        elif(key == 'habileter'):
+            habileter = dict[key]
+        elif(key == 'endurance'):
+            endurance = dict[key]
+        elif(key == 'objets_speciaux'):
+            objets_speciaux = dict[key]
+        elif(key == 'bourse'):
+            bourse = dict[key]
+        elif(key == 'endurance_loup'):
+            endurance_loup = dict[key]
+        elif(key == 'quotien_attaque'):
+            quotien_attaque = dict[key]
+        elif(key == 'endurance_ennemie'):
+            endurance_ennemie = dict[key]
+        else:
+            # insert_sauvegarde_aventures(fetch_another)
+            print("Ça chie en sale !")
+
+    args = (
+    id_save,
+    discipline,
+    armes,
+    objets_sac,
+    repas_sac,
+    habileter,
+    endurance,
+    objets_speciaux,
+    bourse,
+    endurance_loup,
+    quotien_attaque,
+    endurance_ennemie,
+    id_feuille_aventure
+    )
+
+    id_feuille_aventure = CURSEUR.callproc(procedure, args)[11]
+    CURSEUR.reset()
+    return id_feuille_aventure
+
+def update_sauvegarde_aventure(id_save:int, nom_champs:str, valeur:str) -> None:
+    global CURSEUR
+    procedure:str = 'update_aventure'
+
+    args = (id_save, nom_champs, valeur)
     CURSEUR.callproc(procedure, args)
     CURSEUR.reset()

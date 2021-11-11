@@ -229,7 +229,6 @@ class ECRAN_USAGER(QDialog):
                 sizePolicy.setHeightForWidth(self.savespushButton.sizePolicy().hasHeightForWidth())
             self.savespushButton.setSizePolicy(sizePolicy)
             layout.addWidget(self.savespushButton)
-            
             i+= 1
 
 #### ECRAN_ACCEUIL ##############################################
@@ -339,6 +338,11 @@ class ECRAN_AVENTURE(QDialog):
     
     parent:MyStackedWidget
 
+    save_id:int
+    id_user:int
+    id_livre:int
+    id_chapitre:int
+
     def __init__(self):
         super(ECRAN_AVENTURE, self).__init__()
         ui_path =  os.path.dirname(os.path.abspath(__file__))
@@ -349,12 +353,45 @@ class ECRAN_AVENTURE(QDialog):
         self.save_pushButton.clicked.connect(lambda: self.save_aventure())
         self.cancel_pushButton.clicked.connect(lambda: self.cancel_aventure())
             
-    def save_aventure():
+    def save_aventure(self):
+
+        liste_valeur = self.fetch_all_text_area()
+
+        if(not self.save_id):
+            self.save_id = insert_sauvegarde_aventures(self.save_id) 
+        else:
+            update_sauvegarde_parties(self.save_id, self.id_user, self.id_livre, self.id_chapitre)
+            for key in liste_valeur:
+                champ = key
+                valeur =  liste_valeur[key]
+                update_sauvegarde_aventure(self.save_id, champ, valeur)
+
+
+    def fetch_all_text_area(self) -> list[str]:
+        liste:dict[str] = {
+            'discipline' : self.discipline_textEdit,
+            'endurance_loup' : self.endurance_loup_textEdit,
+            'armes' : self.armes_textEdit,
+            'objets_sac' : self.objets_sac_textEdit,
+            'repas_sac' : self.repas_sac_textEdit,
+            'habileter' : self.habileter_textEdit,
+            'endurance' : self.endurance_textEdit,
+            'objetsSpeciaux' : self.objetsSpeciaux_textEdit,
+            'bourse' : self.bourse_textEdit,
+            'quotient_attaque' : self.quotient_attaque_textEdit,
+            'endurance_ennemie' : self.endurance_ennemie_textEdit
+        }
+
+        return liste
+
+
+    def load_aventure(self):
         
         pass
 
-    def cancel_aventure():
-
+    def cancel_aventure(self):
+        self.hide() 
+        # && reload last loaded (save)
         pass
 
 
@@ -385,6 +422,8 @@ class ECRAN_CHAPITRE(QDialog):
         self.page_precedente_pushButton_2.clicked.connect(lambda: self.prev_chapitre())
         self.page_suivante_pushButton_3.clicked.connect(lambda: self.next_chapitre())
         self.page_aventure_pushButton_4.clicked.connect(lambda: self.afficher_aventure())
+        self.save_pushButton.clicked.connect(lambda: self.save_aventure())
+        self.cancel_pushButton.clicked.connect(lambda: self.cancel_aventure())
         
         
 
@@ -394,7 +433,11 @@ class ECRAN_CHAPITRE(QDialog):
         self.parent.switchTo('EcranUsager')
 
     def afficher_aventure(self):
-        self.ecran_aventure.show()
+        if(self.ecran_aventure.isVisible):
+            self.ecran_aventure.hide()
+            self.ecran_aventure.save_aventure()
+        else:
+            self.ecran_aventure.show()
     
     def next_chapitre(self):
         chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
@@ -422,20 +465,25 @@ class ECRAN_CHAPITRE(QDialog):
 
         if(sender.objectName() == 'savespushButton'):
             save_id = sender.save_id
+            # Ajouter la fonction de load feuilles aventure
+
         elif(sender.objectName() == 'livrespushButton'):
             save_id = insert_sauvegarde_parties(id_usager, id_livre, id_chapitre, save_id)
         
-        
+        self.ecran_aventure.save_id = save_id
+        self.ecran_aventure.id_user = id_usager
+        self.ecran_aventure.id_livre = id_livre
 
+        chapitres_comboBox:QtWidgets.QComboBox = self.selection_chapitre_comboBox_2
         self.parent.switchTo(self.objectName())
         self.page_precedente_pushButton_2.hide()
 
         dict_chapitre = lister_chapitre(id_livre)
-        
       
         chapitres_comboBox.addItem("")
         chapitres_comboBox.setItemText(0, "Sélectionnez un chapitre")
         chapitres_comboBox.currentIndexChanged.connect(self.selectionchange)
+
 
         if(len(dict_chapitre) > 0):
 
@@ -462,6 +510,7 @@ class ECRAN_CHAPITRE(QDialog):
                 chapitres_comboBox.setCurrentIndex(num_chapitre+1)
             else:
                 chapitres_comboBox.setCurrentIndex(1)
+
 
     def check_next_prev_btn(self) -> int:
 
@@ -512,6 +561,8 @@ class ECRAN_CHAPITRE(QDialog):
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:36pt; font-weight:400; font-style:normal;\">\n"
             f"{txt_default}</body></html>"))
+
+        self.ecran_aventure.id_chapitre = index+1
 
 
 
