@@ -171,6 +171,7 @@ class ECRAN_USAGER(QDialog):
             self.livrespushButton.num_chapitre = 0
             self.livrespushButton.id_chapitre = lister_premier_chapitre(id_livre)[0][0]
             self.livrespushButton.usager_id = usager_id
+            self.livrespushButton.titre_livre = nomLivre
             self.livrespushButton.setSizePolicy(sizePolicy)
             self.livrespushButton.setText(_translate("EcranUsager", f"{nomLivre} \n {auteurLivre}"))
             self.livrespushButton.setObjectName('livrespushButton')
@@ -221,6 +222,7 @@ class ECRAN_USAGER(QDialog):
             self.savespushButton.num_chapitre = num_chapitre
             self.savespushButton.usager_id = usager_id
             self.savespushButton.save_id = save_id
+            self.savespushButton.titre_livre = titre
             self.savespushButton.setText(_translate("EcranUsager", f"{saveString}"))
             self.savespushButton.setObjectName('savespushButton')
 
@@ -509,11 +511,13 @@ class ECRAN_CHAPITRE(QDialog):
             save_id = sender.save_id
             self.ecran_aventure.save_id = save_id
             self.ecran_aventure.load_aventure()
+            self.titrelivre_label.setText(sender.titre_livre)
 
         elif(sender.objectName() == 'livrespushButton'):
             save_id = insert_sauvegarde_parties(id_usager, id_livre, id_chapitre, save_id)
             self.ecran_aventure.reset_aventure()
             dictionaire = self.ecran_aventure.fetch_all_text_area()
+            self.titrelivre_label.setText(sender.titre_livre)
             insert_sauvegarde_aventures(save_id, dictionaire)
 
         self.ecran_aventure.save_id = save_id
